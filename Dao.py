@@ -26,7 +26,7 @@ def getUserByIdAndPwd(username, password):
 
 def getUserInfoById(uid):
     conn, cursor = getConnect()
-    sql = 'select uid, uname, ugender, uidentify, uclid, utel, urole from user where uid=%s'
+    sql = 'select uid, uname, ugender, uidentify, uclid, uemail, urole from user where uid=%s'
     cursor.execute(sql, uid)
     res = cursor.fetchone()
     cursor.close()
