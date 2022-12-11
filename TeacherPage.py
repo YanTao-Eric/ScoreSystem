@@ -127,7 +127,7 @@ class Frame_content_0(Frame):
         return ipt
 
     def __tk_label_tea_tel(self):
-        label = Label(self, text="手机号", anchor="e")
+        label = Label(self, text="电子邮箱", anchor="e")
         label.place(x=360, y=320, width=100, height=30)
         return label
 
