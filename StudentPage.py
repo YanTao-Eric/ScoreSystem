@@ -73,12 +73,12 @@ class Frame_content_0(Frame):
         self.tk_input_stu_number = self.__tk_input_stu_number()
         self.tk_label_stu_name = self.__tk_label_stu_name()
         self.tk_input_stu_name = self.__tk_input_stu_name()
-        self.tk_label_stu_age = self.__tk_label_stu_age()
-        self.tk_input_stu_age = self.__tk_input_stu_age()
+        self.tk_label_stu_gender = self.__tk_label_stu_gender()
+        self.tk_tk_select_stu_gender = self.__tk_select_stu_gender()
         self.tk_label_stu_identity = self.__tk_label_stu_identity()
         self.tk_input_stu_identity = self.__tk_input_stu_identity()
-        self.tk_label_stu_tel = self.__tk_label_stu_tel()
-        self.tk_input_stu_tel = self.__tk_input_stu_tel()
+        self.tk_label_stu_email = self.__tk_label_stu_email()
+        self.tk_input_stu_email = self.__tk_input_stu_email()
         self.tk_button_stu_update = self.__tk_button_stu_update()
         self.tk_button_stu_reset = self.__tk_button_stu_reset()
 
@@ -91,8 +91,10 @@ class Frame_content_0(Frame):
         return label
 
     def __tk_input_stu_number(self):
-        ipt = Entry(self)
+        self.student_number = StringVar(self)
+        ipt = Entry(self, text=self.student_number)
         ipt.place(x=490, y=40, width=150, height=30)
+        ipt.config(stat='disable')
         return ipt
 
     def __tk_label_stu_name(self):
@@ -101,19 +103,27 @@ class Frame_content_0(Frame):
         return label
 
     def __tk_input_stu_name(self):
-        ipt = Entry(self)
+        self.student_name = StringVar(self)
+        ipt = Entry(self, text=self.student_name)
         ipt.place(x=490, y=110, width=150, height=30)
         return ipt
 
-    def __tk_label_stu_age(self):
-        label = Label(self, text="年龄", anchor="e")
+    def __tk_label_stu_gender(self):
+        label = Label(self, text="性别", anchor="e")
         label.place(x=360, y=180, width=100, height=30)
         return label
 
-    def __tk_input_stu_age(self):
-        ipt = Entry(self)
-        ipt.place(x=490, y=180, width=150, height=30)
-        return ipt
+    def __tk_select_stu_gender(self):
+        cb = Combobox(self, state='readonly')
+        cb['values'] = ("男", "女")
+        cb.place(x=490, y=180, width=150, height=30)
+        return cb
+
+    # def __tk_input_stu_age(self):
+    #     self.student_age = StringVar(self)
+    #     ipt = Entry(self, text=self.student_age)
+    #     ipt.place(x=490, y=180, width=150, height=30)
+    #     return ipt
 
     def __tk_label_stu_identity(self):
         label = Label(self, text="身份证号", anchor="e")
@@ -121,17 +131,19 @@ class Frame_content_0(Frame):
         return label
 
     def __tk_input_stu_identity(self):
-        ipt = Entry(self)
+        self.student_identify = StringVar(self)
+        ipt = Entry(self, text=self.student_identify)
         ipt.place(x=490, y=250, width=150, height=30)
         return ipt
 
-    def __tk_label_stu_tel(self):
+    def __tk_label_stu_email(self):
         label = Label(self, text="电子邮箱", anchor="e")
         label.place(x=360, y=320, width=100, height=30)
         return label
 
-    def __tk_input_stu_tel(self):
-        ipt = Entry(self)
+    def __tk_input_stu_email(self):
+        self.student_email = StringVar(self)
+        ipt = Entry(self, text=self.student_email)
         ipt.place(x=490, y=320, width=150, height=30)
         return ipt
 
@@ -155,6 +167,7 @@ class Frame_content_1(Frame):
         self.tk_select_box_course_department = self.__tk_select_box_course_department()
         self.tk_select_box_exam_method = self.__tk_select_box_exam_method()
         self.tk_button_search = self.__tk_button_search()
+        self.tk_button_export = self.__tk_button_export()
 
     def __frame(self):
         self.place(x=0, y=100, width=1000, height=500)
@@ -202,6 +215,11 @@ class Frame_content_1(Frame):
     def __tk_button_search(self):
         btn = Button(self, text="搜索")
         btn.place(x=750, y=10, width=75, height=30)
+        return btn
+
+    def __tk_button_export(self):
+        btn = Button(self, text="导出")
+        btn.place(x=840, y=10, width=75, height=30)
         return btn
 
 
@@ -269,26 +287,36 @@ class Win(WinGUI):
     def __init__(self, current_user):
         super().__init__()
         self.__event_bind()
-        self.tk_label_current_user['text'] = "当前用户：" + Dao.getUserInfoById(current_user)[1]
+        self.userInfo = Dao.getUserInfoById(current_user)
+        self.tk_label_current_user['text'] = "当前用户：" + self.userInfo[1]
+        self.tk_tabs_content.tk_tabs_content_0.student_number.set(self.userInfo[0])
+        self.tk_tabs_content.tk_tabs_content_0.student_name.set(self.userInfo[1])
+        self.tk_tabs_content.tk_tabs_content_0.tk_tk_select_stu_gender.current(0 if self.userInfo[2] else 1)
+        self.tk_tabs_content.tk_tabs_content_0.student_identify.set(self.userInfo[3])
+        self.tk_tabs_content.tk_tabs_content_0.student_email.set(self.userInfo[5])
 
     def logout(self):
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
 
-
-    def updateUserInfo(self, evt):
-        print("<Button-1>事件未处理", evt)
-
-    def resetUserInfo(self, evt):
-        print("<Button-1>事件未处理", evt)
-
     def updateStudentInfo(self, evt):
+        self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_name.get()
+        self.tk_tabs_content.tk_tabs_content_0.tk_tk_select_stu_gender.get()
+        self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_identity.get()
+        self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_email.get()
         print("<Button-1>事件未处理", evt)
 
     def stu_reset(self, evt):
-        print("<Button-1>事件未处理", evt)
+        self.tk_tabs_content.tk_tabs_content_0.student_number.set(self.userInfo[0])
+        self.tk_tabs_content.tk_tabs_content_0.student_name.set(self.userInfo[1])
+        self.tk_tabs_content.tk_tabs_content_0.tk_tk_select_stu_gender.current(0 if self.userInfo[2] else 1)
+        self.tk_tabs_content.tk_tabs_content_0.student_identify.set(self.userInfo[3])
+        self.tk_tabs_content.tk_tabs_content_0.student_email.set(self.userInfo[5])
 
     def searchStudentScore(self, evt):
+        print("<Button-1>事件未处理", evt)
+
+    def exportStudentScore(self, evt):
         print("<Button-1>事件未处理", evt)
 
     def updateStudentPassword(self, evt):
@@ -300,11 +328,10 @@ class Win(WinGUI):
 
     def __event_bind(self):
         self.protocol('WM_DELETE_WINDOW', self.logout)
-        self.tk_tabs_content.tk_tabs_content_0.tk_button_stu_update.bind('<Button-1>', self.updateUserInfo)
-        self.tk_tabs_content.tk_tabs_content_0.tk_button_stu_reset.bind('<Button-1>', self.resetUserInfo)
         self.tk_tabs_content.tk_tabs_content_0.tk_button_stu_update.bind('<Button-1>', self.updateStudentInfo)
         self.tk_tabs_content.tk_tabs_content_0.tk_button_stu_reset.bind('<Button-1>', self.stu_reset)
         self.tk_tabs_content.tk_tabs_content_1.tk_button_search.bind('<Button-1>', self.searchStudentScore)
+        self.tk_tabs_content.tk_tabs_content_1.tk_button_export.bind('<Button-1>', self.exportStudentScore)
         self.tk_tabs_content.tk_tabs_content_3.tk_button_update_stu_password.bind('<Button-1>',
                                                                                   self.updateStudentPassword)
         self.tk_button_logout.bind('<Button-1>', self.logout_user)

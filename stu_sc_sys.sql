@@ -11,7 +11,7 @@
  Target Server Version : 80022
  File Encoding         : 65001
 
- Date: 11/12/2022 13:59:19
+ Date: 12/12/2022 16:24:09
 */
 
 SET NAMES utf8mb4;
@@ -27,7 +27,7 @@ CREATE TABLE `classes`  (
   `clmid` int NOT NULL COMMENT '专业',
   `clno` int NOT NULL COMMENT '班级序号',
   PRIMARY KEY (`clid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of classes
@@ -55,7 +55,7 @@ CREATE TABLE `course`  (
   `cdid` int NOT NULL COMMENT '开课学院',
   `cmid` int NOT NULL COMMENT '考试方式',
   PRIMARY KEY (`cid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of course
@@ -79,7 +79,7 @@ CREATE TABLE `department`  (
   `did` int NOT NULL AUTO_INCREMENT COMMENT '学院id',
   `dname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '学院名称',
   PRIMARY KEY (`did`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of department
@@ -111,7 +111,7 @@ CREATE TABLE `dictionary`  (
   `ddtkey` int NOT NULL COMMENT '该分类的主键',
   `ddtvalue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '该键的值',
   PRIMARY KEY (`ddid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of dictionary
@@ -138,7 +138,7 @@ CREATE TABLE `major`  (
   `mdid` int NOT NULL COMMENT '所属学院',
   `mlid` int NOT NULL DEFAULT 1 COMMENT '教育层次',
   PRIMARY KEY (`mid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of major
@@ -184,7 +184,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (200001, 'Alice', b'0', NULL, 9, NULL, '123456', 1);
+INSERT INTO `user` VALUES (200001, 'Alice', b'0', '513721200111111234', 9, 'alice123@foxmail.com', '123456', 1);
 INSERT INTO `user` VALUES (200002, 'Jobs', b'1', NULL, 1, NULL, '123456', 1);
 INSERT INTO `user` VALUES (220001, 'Eric', b'1', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
 INSERT INTO `user` VALUES (220002, 'Steve', b'1', '123456789012345678', 9, '471404371@qq.com', '123456', 0);
@@ -199,7 +199,7 @@ CREATE TABLE `user_course`  (
   `cid` int NOT NULL,
   `score` decimal(6, 2) NULL DEFAULT NULL,
   PRIMARY KEY (`ucid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_course

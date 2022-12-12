@@ -28,6 +28,7 @@ def getUserInfoById(uid):
     conn, cursor = getConnect()
     sql = 'select uid, uname, ugender, uidentify, uclid, uemail, urole from user where uid=%s'
     cursor.execute(sql, uid)
+    columns = [field[0] for field in cursor.description]
     res = cursor.fetchone()
     cursor.close()
     conn.close()
