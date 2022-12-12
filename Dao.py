@@ -8,7 +8,8 @@ def getConnect():
         user='root',
         password='521027',
         db='stu_sc_sys',
-        charset='utf8'
+        charset='utf8',
+        cursorclass=pymysql.cursors.DictCursor
     )
     cursor = conn.cursor()
     return conn, cursor
@@ -30,6 +31,7 @@ def getUserInfoById(uid):
     cursor.execute(sql, uid)
     columns = [field[0] for field in cursor.description]
     res = cursor.fetchone()
+    result = ()
     cursor.close()
     conn.close()
     return res
@@ -42,4 +44,54 @@ def getScoreByUserId(username):
     res = cursor.fetchall()
     cursor.close()
     conn.close()
+    return res
+
+
+def getAllUsers():
+    connection, cursor = getConnect()
+    sql = 'select uid, uname, ugender, uidentify, uclid, uemail, upwd, urole from user'
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def getAllStudents():
+    connection, cursor = getConnect()
+    sql = 'select uid, uname, ugender, uidentify, uclid, uemail, upwd, urole from user where urole = 1'
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def addUser(uid, uname, ugender, uidentify, uclid, uemail, upwd, urole):
+    connection, cursor = getConnect()
+    sql = "insert into user(uid, uname, ugender, uidentify, uclid, uemail, upwd, urole) values (%d, %s, %d, %s, %d, " \
+          "%s, %s, %d) "
+    res = {
+        "code": 0,
+        "msg": "success"
+    }
+    try:
+        cursor.execute(sql, (uid, uname, ugender, uidentify, uclid, uemail, upwd, urole))
+        connection.commit()
+    except Exception as e:
+        res = {
+            "code": 1,
+            "msg": "error"
+        }
+        print(e)
+    cursor.close()
+    connection.close()
     return res
