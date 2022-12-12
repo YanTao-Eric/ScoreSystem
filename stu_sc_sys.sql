@@ -11,7 +11,7 @@
  Target Server Version : 80022
  File Encoding         : 65001
 
- Date: 12/12/2022 16:24:09
+ Date: 12/12/2022 21:54:23
 */
 
 SET NAMES utf8mb4;
@@ -170,9 +170,9 @@ INSERT INTO `major` VALUES (21, '学前教育', 5, 2);
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
-  `uid` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户id',
+  `uid` int NOT NULL AUTO_INCREMENT COMMENT '用户id',
   `uname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '姓名',
-  `ugender` bit(1) NOT NULL DEFAULT b'1' COMMENT '性别',
+  `ugender` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '男' COMMENT '性别',
   `uidentify` varchar(18) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '身份证号',
   `uclid` int NOT NULL COMMENT '班级',
   `uemail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '手机号',
@@ -184,10 +184,10 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (200001, 'Alice', b'0', '513721200111111234', 9, 'alice123@foxmail.com', '123456', 1);
-INSERT INTO `user` VALUES (200002, 'Jobs', b'1', NULL, 1, NULL, '123456', 1);
-INSERT INTO `user` VALUES (220001, 'Eric', b'1', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
-INSERT INTO `user` VALUES (220002, 'Steve', b'1', '123456789012345678', 9, '471404371@qq.com', '123456', 0);
+INSERT INTO `user` VALUES (200001, 'Alice', '女', '513721200111111234', 9, 'alice123@foxmail.com', '123456', 1);
+INSERT INTO `user` VALUES (200002, 'Jobs', '男', NULL, 1, NULL, '123456', 1);
+INSERT INTO `user` VALUES (220001, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220002, 'Steve', '男', '123456789012345678', 9, '471404371@qq.com', '123456', 0);
 
 -- ----------------------------
 -- Table structure for user_course

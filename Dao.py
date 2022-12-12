@@ -2,6 +2,10 @@ import pymysql
 
 
 def getConnect():
+    """
+    获取数据库连接
+    :return:
+    """
     conn = pymysql.Connect(
         host='localhost',
         port=3306,
@@ -22,7 +26,7 @@ def getUserByIdAndPwd(username, password):
     res = {
         "code": 0,
         "msg": "success",
-        "data": cursor.fetchone()
+        "data": cursor.fetchall()
     }
     cursor.close()
     conn.close()
@@ -33,9 +37,7 @@ def getUserInfoById(uid):
     conn, cursor = getConnect()
     sql = 'select uid, uname, ugender, uidentify, uclid, uemail, urole from user where uid=%s'
     cursor.execute(sql, uid)
-    columns = [field[0] for field in cursor.description]
     res = cursor.fetchone()
-    result = ()
     cursor.close()
     conn.close()
     return res
@@ -67,7 +69,7 @@ def getAllUsers():
 
 def getAllStudents():
     connection, cursor = getConnect()
-    sql = 'select uid, uname, ugender, uidentify, uclid, uemail, upwd, urole from user where urole = 1'
+    sql = 'select row_number() over () as id, uid, uname, ugender, uidentify, uclid, uemail, upwd, urole from user where urole = 1'
     cursor.execute(sql)
     res = {
         "code": 0,
