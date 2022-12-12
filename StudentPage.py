@@ -287,13 +287,12 @@ class Win(WinGUI):
     def __init__(self, current_user):
         super().__init__()
         self.__event_bind()
-        self.userInfo = Dao.getUserInfoById(current_user)
-        self.tk_label_current_user['text'] = "当前用户：" + self.userInfo[1]
-        self.tk_tabs_content.tk_tabs_content_0.student_number.set(self.userInfo[0])
-        self.tk_tabs_content.tk_tabs_content_0.student_name.set(self.userInfo[1])
-        self.tk_tabs_content.tk_tabs_content_0.tk_tk_select_stu_gender.current(0 if self.userInfo[2] else 1)
-        self.tk_tabs_content.tk_tabs_content_0.student_identify.set(self.userInfo[3])
-        self.tk_tabs_content.tk_tabs_content_0.student_email.set(self.userInfo[5])
+        self.tk_label_current_user['text'] = "当前用户：" + current_user.get("uname")
+        self.tk_tabs_content.tk_tabs_content_0.student_number.set(current_user.get("uid"))
+        self.tk_tabs_content.tk_tabs_content_0.student_name.set(current_user.get("uname"))
+        self.tk_tabs_content.tk_tabs_content_0.tk_tk_select_stu_gender.current(0 if current_user.get("ugender") else 1)
+        self.tk_tabs_content.tk_tabs_content_0.student_identify.set(current_user.get("uidentify"))
+        self.tk_tabs_content.tk_tabs_content_0.student_email.set(current_user.get("uemail"))
 
     def logout(self):
         messagebox.showwarning('提示', '欢迎下次使用！')

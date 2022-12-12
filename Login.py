@@ -71,20 +71,20 @@ class Win(WinGUI):
     def login(self, evt):
         __uid = self.tk_input_username.get()
         __pwd = self.tk_input_password.get()
-        __res = Dao.getUserByIdAndPwd(__uid, __pwd)
-        if len(__res) == 0:
-            messagebox.showwarning('提示', '账号或密码错误')
-            return
-        messagebox.showwarning('提示', '登录成功！')
-        self.destroy()
-        if __res[1] == 1:
-            student = StudentPage.Win(__uid)
-            student.mainloop()
-        elif __res[1] == 0:
-            teacher = TeacherPage.Win(__uid)
-            teacher.mainloop()
+        __data = Dao.getUserByIdAndPwd(__uid, __pwd).get("data")
+        if __data:
+            messagebox.showwarning('提示', '登录成功！')
+            self.destroy()
+            if __data.get("urole") == 1:
+                student = StudentPage.Win(__data)
+                student.mainloop()
+            elif __data.get("urole") == 0:
+                teacher = TeacherPage.Win(__data)
+                teacher.mainloop()
+            else:
+                print("未获取到用户角色！")
         else:
-            print("未获取到用户角色！")
+            messagebox.showwarning('提示', '账号或密码错误')
 
     def reset(self, evt):
         self.username_value.set("")

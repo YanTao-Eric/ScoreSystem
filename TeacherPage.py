@@ -337,7 +337,7 @@ class Win(WinGUI):
     def __init__(self, current_user):
         super().__init__()
         self.__event_bind()
-        self.tk_label_current_user['text'] = "当前用户：" + Dao.getUserInfoById(current_user)[1]
+        self.tk_label_current_user['text'] = "当前用户：" + current_user.get("uname")
 
     def logout(self):
         messagebox.showwarning('提示', '欢迎下次使用！')

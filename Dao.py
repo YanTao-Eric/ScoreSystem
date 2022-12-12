@@ -17,9 +17,13 @@ def getConnect():
 
 def getUserByIdAndPwd(username, password):
     conn, cursor = getConnect()
-    sql = 'select uid, urole from user where uid=%s and upwd=%s'
+    sql = 'select uid, uname, ugender, uidentify, uclid, uemail, urole from user where uid=%s and upwd=%s'
     cursor.execute(sql, (username, password))
-    res = cursor.fetchone()
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchone()
+    }
     cursor.close()
     conn.close()
     return res
