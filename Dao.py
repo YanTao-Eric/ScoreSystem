@@ -170,3 +170,97 @@ def updateUser(uid, uname, ugender, uidentify, uclid, uemail):
     cursor.close()
     connection.close()
     return res
+
+
+def getAllCourses():
+    """
+    获取所有的课程信息
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = '''select row_number() over () as id, cname, ccredit, da.ddtvalue as nature, d.dname, db.ddtvalue
+            from course c
+            inner join dictionary da on c.cnid = da.ddtkey and da.ddtype = 'nature'
+            inner join dictionary db on c.cmid = db.ddtkey and db.ddtype = 'exammethod'
+            inner join department d on c.cdid = d.did'''
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def getAllExamMethods():
+    """
+    获取所有的课程考核方式
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = "select d.ddtkey as k, d.ddtvalue as v from dictionary d where d.ddtype = 'exammethod'"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def getAllCourseNatures():
+    """
+    获取所有的课程性质
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = "select d.ddtkey as k, d.ddtvalue as v from dictionary d where d.ddtype = 'nature'"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def getAllDepartments():
+    """
+    获取所有的学院
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = "select did as k, dname as v from department"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def getMaxStuNumber(s_num_prefix):
+    """
+    获取以s_num_prefix开头的最大学号
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select MAX(uid) as max_id from user where uid like '{s_num_prefix}%'"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res

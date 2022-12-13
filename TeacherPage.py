@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import *
 
+import AddCoursePage
 import Dao
 
 
@@ -352,7 +353,7 @@ class Frame_content_5(Frame):
 
     def __tk_table_course_manage(self):
         # 表头字段 表头宽度
-        columns = {"ID": 200, "字段#1": 300, "字段#2": 500}
+        columns = {"ID": 100, "课程名称": 200, "学分": 100, "课程性质": 200, "开课学院": 300, "考试方式": 100}
         # 初始化表格 表格是基于Treeview，tkinter本身没有表格。show="headings" 为隐藏首列。
         tk_table = Treeview(self, show="headings", columns=list(columns))
         for text, width in columns.items():  # 批量设置列属性
@@ -360,14 +361,11 @@ class Frame_content_5(Frame):
             tk_table.column(text, anchor='center', width=width, stretch=False)  # stretch 不自动拉伸
 
         # 插入数据示例
-        # data = [
-        #     [1, "github", "https://github.com/iamxcd/tkinter-helper"],
-        #     [2, "演示地址", "https://www.pytk.net/tkinter-helper"]
-        # ]
-        #
-        # # 导入初始数据
-        # for values in data:
-        #     tk_table.insert('', END, values=values)
+        result = Dao.getAllCourses()
+        # 导入初始数据
+        if result.get("code") == 0 and result.get("data"):
+            for data in result.get("data"):
+                tk_table.insert('', END, values=list(data.values()))
 
         tk_table.place(x=0, y=60, width=1000, height=415)
         return tk_table
@@ -444,6 +442,8 @@ class Win(WinGUI):
         print("<Button-1>事件未处理", evt)
 
     def addCourseInfo(self, evt):
+        addCoursePage = AddCoursePage.Win()
+        addCoursePage.mainloop()
         print("添加成绩！")
 
     def deleteCourseInfo(self, evt):
@@ -473,4 +473,3 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_5.tk_button_delete_course.bind('<Button-1>', self.deleteCourseInfo)
         self.tk_tabs_content.tk_tabs_content_5.tk_button_course_search.bind('<Button-1>', self.searchCourseInfo)
         self.tk_button_logout_user.bind('<Button-1>', self.logout_user)
-
