@@ -2,8 +2,8 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import *
 
-import AddCoursePage
 import Dao
+import addstudent
 
 
 class WinGUI(Tk):
@@ -63,9 +63,6 @@ class Frame_content(Notebook):
 
         self.tk_tabs_content_4 = Frame_content_4(self)
         self.add(self.tk_tabs_content_4, text="修改密码")
-
-        self.tk_tabs_content_5 = Frame_content_5(self)
-        self.add(self.tk_tabs_content_5, text="课程管理")
 
         self.place(x=0, y=100, width=1000, height=500)
 
@@ -167,7 +164,7 @@ class Frame_content_1(Frame):
 
     def __tk_table_student_query(self):
         # 表头字段 表头宽度
-        columns = {"ID": 200, "字段#1": 300, "字段#2": 500}
+        columns = {"ID": 50, "学号": 150, "姓名": 150, '性别': 150, '身份证号': 150, '班级': 150, '邮箱': 150}
         # 初始化表格 表格是基于Treeview，tkinter本身没有表格。show="headings" 为隐藏首列。
         tk_table = Treeview(self, show="headings", columns=list(columns))
         for text, width in columns.items():  # 批量设置列属性
@@ -181,8 +178,16 @@ class Frame_content_1(Frame):
         # ]
         #
         # # 导入初始数据
-        # for values in data:
-        #     tk_table.insert('', END, values=values)
+        result = Dao.getAllStudents()
+        if result.get("code") == 0:
+            if result.get("data"):
+                print(result.get("data"))
+                for values in result.get("data"):
+                    tk_table.insert('', END, values=list(values.values()))
+            else:
+                print("未查询到数据！")
+        else:
+            print("数据查询异常！")
 
         tk_table.place(x=0, y=60, width=1000, height=415)
         return tk_table
@@ -230,7 +235,7 @@ class Frame_content_2(Frame):
 
     def __tk_table_lbhdrkzi(self):
         # 表头字段 表头宽度
-        columns = {"ID": 200, "字段#1": 300, "字段#2": 500}
+        columns = {"ID": 50}
         # 初始化表格 表格是基于Treeview，tkinter本身没有表格。show="headings" 为隐藏首列。
         tk_table = Treeview(self, show="headings", columns=list(columns))
         for text, width in columns.items():  # 批量设置列属性
@@ -244,7 +249,7 @@ class Frame_content_2(Frame):
         # ]
         #
         # # 导入初始数据
-        # for values in data:
+        # for values in student:
         #     tk_table.insert('', END, values=values)
 
         tk_table.place(x=0, y=60, width=1000, height=415)
@@ -337,67 +342,6 @@ class Frame_content_4(Frame):
         return btn
 
 
-class Frame_content_5(Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.__frame()
-        self.tk_table_course_manage = self.__tk_table_course_manage()
-        self.tk_button_add_course = self.__tk_button_add_course()
-        self.tk_button_delete_course = self.__tk_button_delete_course()
-        self.tk_select_box_course_department = self.__tk_select_box_course_department()
-        self.tk_select_box_course_exam_method = self.__tk_select_box_course_exam_method()
-        self.tk_button_course_search = self.__tk_button_course_search()
-
-    def __frame(self):
-        self.place(x=0, y=100, width=1000, height=500)
-
-    def __tk_table_course_manage(self):
-        # 表头字段 表头宽度
-        columns = {"ID": 100, "课程名称": 200, "学分": 100, "课程性质": 200, "开课学院": 300, "考试方式": 100}
-        # 初始化表格 表格是基于Treeview，tkinter本身没有表格。show="headings" 为隐藏首列。
-        tk_table = Treeview(self, show="headings", columns=list(columns))
-        for text, width in columns.items():  # 批量设置列属性
-            tk_table.heading(text, text=text, anchor='center')
-            tk_table.column(text, anchor='center', width=width, stretch=False)  # stretch 不自动拉伸
-
-        # 插入数据示例
-        result = Dao.getAllCourses()
-        # 导入初始数据
-        if result.get("code") == 0 and result.get("data"):
-            for data in result.get("data"):
-                tk_table.insert('', END, values=list(data.values()))
-
-        tk_table.place(x=0, y=60, width=1000, height=415)
-        return tk_table
-
-    def __tk_button_add_course(self):
-        btn = Button(self, text="添加课程")
-        btn.place(x=50, y=10, width=100, height=30)
-        return btn
-
-    def __tk_button_delete_course(self):
-        btn = Button(self, text="删除课程")
-        btn.place(x=180, y=10, width=100, height=30)
-        return btn
-
-    def __tk_select_box_course_department(self):
-        cb = Combobox(self, state="readonly")
-        cb['values'] = ("列表框", "Python", "Tkinter Helper")
-        cb.place(x=310, y=10, width=150, height=30)
-        return cb
-
-    def __tk_select_box_course_exam_method(self):
-        cb = Combobox(self, state="readonly")
-        cb['values'] = ("列表框", "Python", "Tkinter Helper")
-        cb.place(x=490, y=10, width=150, height=30)
-        return cb
-
-    def __tk_button_course_search(self):
-        btn = Button(self, text="搜索")
-        btn.place(x=670, y=10, width=100, height=30)
-        return btn
-
-
 class Win(WinGUI):
     def __init__(self, current_user):
         super().__init__()
@@ -405,6 +349,10 @@ class Win(WinGUI):
         self.tk_label_current_user['text'] = "当前用户：" + current_user.get("uname")
 
     def logout(self):
+        try:
+            self.addInfo.destroy()
+        except:
+            print("")
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
 
@@ -427,6 +375,8 @@ class Win(WinGUI):
         print("<Button-1>事件未处理", evt)
 
     def addStudentInfo(self, evt):
+        self.addInfo = addstudent.Win()
+        self.addInfo.mainloop()
         print("<Button-1>事件未处理", evt)
 
     def deleteStudentInfo(self, evt):
@@ -440,17 +390,6 @@ class Win(WinGUI):
 
     def updateTeacherPassword(self, evt):
         print("<Button-1>事件未处理", evt)
-
-    def addCourseInfo(self, evt):
-        addCoursePage = AddCoursePage.Win()
-        addCoursePage.mainloop()
-        print("添加成绩！")
-
-    def deleteCourseInfo(self, evt):
-        print("删除课程！")
-
-    def searchCourseInfo(self, evt):
-        print("查询成绩！")
 
     def logout_user(self, evt):
         messagebox.showwarning('提示', '欢迎下次使用！')
@@ -469,7 +408,4 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_2.tk_button_add_score.bind('<Button-1>', self.addStudentScore)
         self.tk_tabs_content.tk_tabs_content_2.tk_button_delete_score.bind('<Button-1>', self.deleteStudentScore)
         self.tk_tabs_content.tk_tabs_content_4.tk_button_update_tea_pwd.bind('<Button-1>', self.updateTeacherPassword)
-        self.tk_tabs_content.tk_tabs_content_5.tk_button_add_course.bind('<Button-1>', self.addCourseInfo)
-        self.tk_tabs_content.tk_tabs_content_5.tk_button_delete_course.bind('<Button-1>', self.deleteCourseInfo)
-        self.tk_tabs_content.tk_tabs_content_5.tk_button_course_search.bind('<Button-1>', self.searchCourseInfo)
         self.tk_button_logout_user.bind('<Button-1>', self.logout_user)
