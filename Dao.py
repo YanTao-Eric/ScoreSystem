@@ -26,7 +26,7 @@ def getUserByIdAndPwd(username, password):
     res = {
         "code": 0,
         "msg": "success",
-        "data": cursor.fetchall()
+        "data": cursor.fetchone()
     }
     cursor.close()
     conn.close()
@@ -81,22 +81,91 @@ def getAllStudents():
     return res
 
 
-def addUser(uid, uname, ugender, uidentify, uclid, uemail, upwd, urole):
+def addStudent(uid, uname, ugender, uidentify, uclid, uemail):
+    """
+    添加一个学生信息，密码默认为123456
+    :param uid:
+    :param uname:
+    :param ugender:
+    :param uidentify:
+    :param uclid:
+    :param uemail:
+    :return:
+    """
     connection, cursor = getConnect()
-    sql = "insert into user(uid, uname, ugender, uidentify, uclid, uemail, upwd, urole) values (%d, %s, %d, %s, %d, " \
-          "%s, %s, %d) "
+    sql = "insert into user(uid, uname, ugender, uidentify, uclid, uemail, upwd) values (%d, %s, %d, %s, %d, %s, %s) "
     res = {
         "code": 0,
-        "msg": "success"
+        "msg": "添加成功！"
     }
     try:
-        cursor.execute(sql, (uid, uname, ugender, uidentify, uclid, uemail, upwd, urole))
+        cursor.execute(sql, (uid, uname, ugender, uidentify, uclid, uemail, '123456'))
         connection.commit()
     except Exception as e:
         res = {
             "code": 1,
-            "msg": "error"
+            "msg": "添加失败！"
         }
+        connection.rollback()
+        print(e)
+    cursor.close()
+    connection.close()
+    return res
+
+
+def deleteUser(uid):
+    """
+    通过uid删除用户
+    :param uid:
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = "delete from user where uid = %d"
+    res = {
+        "code": 0,
+        "msg": "删除成功！"
+    }
+    try:
+        cursor.execute(sql, uid)
+        connection.commit()
+    except Exception as e:
+        res = {
+            "code": 1,
+            "msg": "删除失败！"
+        }
+        connection.rollback()
+        print(e)
+    cursor.close()
+    connection.close()
+    return res
+
+
+def updateUser(uid, uname, ugender, uidentify, uclid, uemail):
+    """
+    通过uid更新用户信息
+    :param uid:
+    :param uname:
+    :param ugender:
+    :param uidentify:
+    :param uclid:
+    :param uemail:
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = "update user set uname = %s, ugender = %s, uidentify = %s, uclid = %s, uemail = %s where uid = %d"
+    res = {
+        "code": 0,
+        "msg": "修改成功！"
+    }
+    try:
+        cursor.execute(sql, (uname, ugender, uidentify, uclid, uemail, uid))
+        connection.commit()
+    except Exception as e:
+        res = {
+            "code": 1,
+            "msg": "修改失败！"
+        }
+        connection.rollback()
         print(e)
     cursor.close()
     connection.close()

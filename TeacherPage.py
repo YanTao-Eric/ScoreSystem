@@ -63,6 +63,9 @@ class Frame_content(Notebook):
         self.tk_tabs_content_4 = Frame_content_4(self)
         self.add(self.tk_tabs_content_4, text="修改密码")
 
+        self.tk_tabs_content_5 = Frame_content_5(self)
+        self.add(self.tk_tabs_content_5, text="课程管理")
+
         self.place(x=0, y=100, width=1000, height=500)
 
 
@@ -333,6 +336,70 @@ class Frame_content_4(Frame):
         return btn
 
 
+class Frame_content_5(Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.__frame()
+        self.tk_table_course_manage = self.__tk_table_course_manage()
+        self.tk_button_add_course = self.__tk_button_add_course()
+        self.tk_button_delete_course = self.__tk_button_delete_course()
+        self.tk_select_box_course_department = self.__tk_select_box_course_department()
+        self.tk_select_box_course_exam_method = self.__tk_select_box_course_exam_method()
+        self.tk_button_course_search = self.__tk_button_course_search()
+
+    def __frame(self):
+        self.place(x=0, y=100, width=1000, height=500)
+
+    def __tk_table_course_manage(self):
+        # 表头字段 表头宽度
+        columns = {"ID": 200, "字段#1": 300, "字段#2": 500}
+        # 初始化表格 表格是基于Treeview，tkinter本身没有表格。show="headings" 为隐藏首列。
+        tk_table = Treeview(self, show="headings", columns=list(columns))
+        for text, width in columns.items():  # 批量设置列属性
+            tk_table.heading(text, text=text, anchor='center')
+            tk_table.column(text, anchor='center', width=width, stretch=False)  # stretch 不自动拉伸
+
+        # 插入数据示例
+        # data = [
+        #     [1, "github", "https://github.com/iamxcd/tkinter-helper"],
+        #     [2, "演示地址", "https://www.pytk.net/tkinter-helper"]
+        # ]
+        #
+        # # 导入初始数据
+        # for values in data:
+        #     tk_table.insert('', END, values=values)
+
+        tk_table.place(x=0, y=60, width=1000, height=415)
+        return tk_table
+
+    def __tk_button_add_course(self):
+        btn = Button(self, text="添加课程")
+        btn.place(x=50, y=10, width=100, height=30)
+        return btn
+
+    def __tk_button_delete_course(self):
+        btn = Button(self, text="删除课程")
+        btn.place(x=180, y=10, width=100, height=30)
+        return btn
+
+    def __tk_select_box_course_department(self):
+        cb = Combobox(self, state="readonly")
+        cb['values'] = ("列表框", "Python", "Tkinter Helper")
+        cb.place(x=310, y=10, width=150, height=30)
+        return cb
+
+    def __tk_select_box_course_exam_method(self):
+        cb = Combobox(self, state="readonly")
+        cb['values'] = ("列表框", "Python", "Tkinter Helper")
+        cb.place(x=490, y=10, width=150, height=30)
+        return cb
+
+    def __tk_button_course_search(self):
+        btn = Button(self, text="搜索")
+        btn.place(x=670, y=10, width=100, height=30)
+        return btn
+
+
 class Win(WinGUI):
     def __init__(self, current_user):
         super().__init__()
@@ -376,6 +443,15 @@ class Win(WinGUI):
     def updateTeacherPassword(self, evt):
         print("<Button-1>事件未处理", evt)
 
+    def addCourseInfo(self, evt):
+        print("添加成绩！")
+
+    def deleteCourseInfo(self, evt):
+        print("删除课程！")
+
+    def searchCourseInfo(self, evt):
+        print("查询成绩！")
+
     def logout_user(self, evt):
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
@@ -393,5 +469,8 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_2.tk_button_add_score.bind('<Button-1>', self.addStudentScore)
         self.tk_tabs_content.tk_tabs_content_2.tk_button_delete_score.bind('<Button-1>', self.deleteStudentScore)
         self.tk_tabs_content.tk_tabs_content_4.tk_button_update_tea_pwd.bind('<Button-1>', self.updateTeacherPassword)
+        self.tk_tabs_content.tk_tabs_content_5.tk_button_add_course.bind('<Button-1>', self.addCourseInfo)
+        self.tk_tabs_content.tk_tabs_content_5.tk_button_delete_course.bind('<Button-1>', self.deleteCourseInfo)
+        self.tk_tabs_content.tk_tabs_content_5.tk_button_course_search.bind('<Button-1>', self.searchCourseInfo)
         self.tk_button_logout_user.bind('<Button-1>', self.logout_user)
 
