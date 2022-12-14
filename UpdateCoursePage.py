@@ -23,7 +23,7 @@ class WinGUI(Tk):
         self.tk_select_box_course_exam_method = self.__tk_select_box_course_exam_method()
 
     def __win(self):
-        self.title("添加课程")
+        self.title("修改课程")
         # 设置窗口大小、居中
         width = 600
         height = 430
@@ -71,7 +71,7 @@ class WinGUI(Tk):
         return label
 
     def __tk_button_add_course(self):
-        btn = Button(self, text="添加")
+        btn = Button(self, text="修改")
         btn.place(x=200, y=360, width=80, height=30)
         return btn
 
@@ -86,7 +86,6 @@ class WinGUI(Tk):
         for i in Dao.getDataDictByType("nature").get("data"):
             values.append(i.get("v"))
         cb['values'] = values
-        cb.current(0)
         cb.place(x=290, y=110, width=150, height=30)
         return cb
 
@@ -96,7 +95,6 @@ class WinGUI(Tk):
         for i in Dao.getAllDepartments().get("data"):
             values.append(i.get("v"))
         cb['values'] = values
-        cb.current(0)
         cb.place(x=290, y=230, width=150, height=30)
         return cb
 
@@ -106,22 +104,28 @@ class WinGUI(Tk):
         for i in Dao.getDataDictByType("exammethod").get("data"):
             values.append(i.get("v"))
         cb['values'] = values
-        cb.current(0)
         cb.place(x=290, y=290, width=150, height=30)
         return cb
 
 
 class Win(WinGUI):
-    def __init__(self):
+    def __init__(self, cid):
         super().__init__()
         self.config(menu=self.create_menu())
         self.__event_bind()
+        self.__cid = cid
+        self.init_data = Dao.getCourseByCid(cid).get("data")
+        self.course_name.set(self.init_data[0].get("cname"))
+        self.tk_select_box_course_nature.set(self.init_data[0].get("cnature"))
+        self.course_credit.set(self.init_data[0].get("ccredit"))
+        self.tk_select_box_course_department.set(self.init_data[0].get("cdepartment"))
+        self.tk_select_box_course_exam_method.set(self.init_data[0].get("cexammethod"))
 
     def create_menu(self):
         menu = Menu(self, tearoff=False)
         return menu
 
-    def addCourse(self, evt):
+    def updateCourse(self, evt):
         __course_name = self.tk_input_course_name.get()
         __course_nature = self.tk_select_box_course_nature.get()
         __course_credit = self.tk_input_course_credit.get()
@@ -132,7 +136,7 @@ class Win(WinGUI):
         elif not re.findall(r'^[0-8]\.[0,5]$', __course_credit):
             messagebox.showerror("错误", "学分格式不合法！")
         else:
-            res = Dao.addCourse(__course_name, __course_nature, __course_credit, __course_department, __course_exam_method)
+            res = Dao.updateCourseInfo(self.__cid, __course_name, __course_nature, __course_credit, __course_department, __course_exam_method)
             if res.get("code") == 0:
                 messagebox.showwarning("提示", res.get("msg"))
                 self.destroy()
@@ -140,15 +144,15 @@ class Win(WinGUI):
                 messagebox.showwarning("提示", res.get("msg"))
 
     def resetCourse(self, evt):
-        self.course_name.set('')
-        self.tk_select_box_course_nature.current(0)
-        self.course_credit.set('')
-        self.tk_select_box_course_department.current(0)
-        self.tk_select_box_course_exam_method.current(0)
+        self.course_name.set(self.init_data[0].get("cname"))
+        self.tk_select_box_course_nature.set(self.init_data[0].get("cnature"))
+        self.course_credit.set(self.init_data[0].get("ccredit"))
+        self.tk_select_box_course_department.set(self.init_data[0].get("cdepartment"))
+        self.tk_select_box_course_exam_method.set(self.init_data[0].get("cexammethod"))
         print("重置成功！", evt)
 
     def __event_bind(self):
-        self.tk_button_add_course.bind('<Button-1>', self.addCourse)
+        self.tk_button_add_course.bind('<Button-1>', self.updateCourse)
         self.tk_button_reset_course.bind('<Button-1>', self.resetCourse)
 
 
