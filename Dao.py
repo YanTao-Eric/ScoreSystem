@@ -221,7 +221,25 @@ def getAllCourses():
     :return:
     """
     connection, cursor = getConnect()
-    sql = '''select row_number() over () as id, cname, ccredit, cnature, cdepartment, cexammethod from course'''
+    sql = '''select cid, cname, ccredit, cnature, cdepartment, cexammethod from course'''
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def getCourseByCid(cid):
+    """
+    获取cid的课程
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select cid, cname, cnature, ccredit, cdepartment, cexammethod from course where cid = '{cid}'"
     cursor.execute(sql)
     res = {
         "code": 0,
@@ -307,7 +325,7 @@ def getMaxStuNumber(s_num_prefix):
 
 def addCourse(cname, nature, credit, department, exam_method):
     """
-    添加成绩
+    添加课程
     :return:
     """
     connection, cursor = getConnect()
@@ -324,6 +342,86 @@ def addCourse(cname, nature, credit, department, exam_method):
         res = {
             "code": 1,
             "msg": "添加课程失败！"
+        }
+        connection.rollback()
+        print(e)
+    cursor.close()
+    connection.close()
+    return res
+
+
+def deleteCourse(cid):
+    """
+    删除课程
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"delete from course where cid = {cid}"
+    res = {
+        "code": 0,
+        "msg": "删除课程成功！"
+    }
+    try:
+        cursor.execute(sql)
+        connection.commit()
+    except Exception as e:
+        res = {
+            "code": 1,
+            "msg": "删除课程失败！"
+        }
+        connection.rollback()
+        print(e)
+    cursor.close()
+    connection.close()
+    return res
+
+
+def searchCourses(department, exammethod):
+    """
+    搜索课程信息
+    :param department:
+    :param exammethod:
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select cid, cname, ccredit, cnature, cdepartment, cexammethod from course " \
+          f"where cdepartment like '%{department}%' and cexammethod like '%{exammethod}%'"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def updateCourseInfo(cid, cname, nature, credit, department, exammethod):
+    """
+    修改课程信息
+    :param cid:
+    :param cname:
+    :param nature:
+    :param credit:
+    :param department:
+    :param exammethod:
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"update course set cname = '{cname}', cnature = '{nature}', ccredit = '{credit}'" \
+          f", cdepartment = '{department}', cexammethod = '{exammethod}' where cid = '{cid}'"
+    res = {
+        "code": 0,
+        "msg": "修改课程成功！"
+    }
+    try:
+        cursor.execute(sql)
+        connection.commit()
+    except Exception as e:
+        res = {
+            "code": 1,
+            "msg": "更新课程失败！"
         }
         connection.rollback()
         print(e)
