@@ -120,6 +120,10 @@ class Win(WinGUI):
         uname = self.tk_input_uname.get()
         print(uname)
         usex = self.gender.get()
+        if usex == 1:
+            usex = '男'
+        else:
+            usex = '女'
         print(usex)
         identityId = self.tk_input_uidentify.get()
         uclid = self.tk_input_uclid.get()
@@ -153,13 +157,7 @@ class Win(WinGUI):
             if result.get("code") == 0:
                 if result.get("data"):
                     idnumber = result.get("data")[0].get('max_id') + 1
-            print(type(idnumber))
-            print(type(uname))
-            print(type(usex))
-            print(type(identityId))
-            print(type(int(uclid)))
-            print(type(uEmail))
-            if Dao.addUser(idnumber, uname, str(usex), identityId, int(uclid), uEmail, '123456').get("code") == 0:
+            if Dao.addUser(idnumber, uname, usex, identityId, int(uclid), uEmail).get("code") == 0:
                 messagebox.showwarning(title='提示', message='插入成功')
 
 

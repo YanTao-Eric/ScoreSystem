@@ -83,8 +83,7 @@ def getAllStudents():
 
 def addUser(uid, uname, ugender, uidentify, uclid, uemail):
     connection, cursor = getConnect()
-    sql = "insert into user(uid, uname, ugender, uidentify, uclid, uemail, upwd) values (%d, %s, %s, %s, %d, " \
-          "%s, %s) "
+    sql = "insert into user(uid, uname, ugender, uidentify, uclid, uemail, upwd) values (%s, %s, %s, %s, %s, %s, %s) "
     res = {
         "code": 0,
         "msg": "success"

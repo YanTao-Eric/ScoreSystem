@@ -158,6 +158,7 @@ class Frame_content_1(Frame):
         self.tk_button_stu_search = self.__tk_button_stu_search()
         self.tk_button_addStudent = self.__tk_button_addStudent()
         self.tk_button_delete_student = self.__tk_button_delete_student()
+        self.tk_button_stu_refresh = self.__tk_button_stu_refresh()
 
     def __frame(self):
         self.place(x=0, y=100, width=1000, height=500)
@@ -199,13 +200,18 @@ class Frame_content_1(Frame):
 
     def __tk_select_box_stu_gender(self):
         cb = Combobox(self, state="readonly")
-        cb['values'] = ("男", "女")
+        cb['values'] = ("全部", "男", "女")
         cb.place(x=540, y=10, width=150, height=30)
         return cb
 
     def __tk_button_stu_search(self):
         btn = Button(self, text="搜索")
         btn.place(x=720, y=10, width=100, height=30)
+        return btn
+
+    def __tk_button_stu_refresh(self):
+        btn = Button(self, text="刷新")
+        btn.place(x=820, y=10, width=100, height=30)
         return btn
 
     def __tk_button_addStudent(self):
@@ -229,6 +235,7 @@ class Frame_content_2(Frame):
         self.tk_button_stu_score_search = self.__tk_button_stu_score_search()
         self.tk_button_add_score = self.__tk_button_add_score()
         self.tk_button_delete_score = self.__tk_button_delete_score()
+
 
     def __frame(self):
         self.place(x=0, y=100, width=1000, height=500)
@@ -395,6 +402,24 @@ class Win(WinGUI):
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
 
+    def refresh(self, evt):
+        # 删除原结点，加入新结点
+        for _ in map(self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.delete, self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.get_children("")):
+            pass
+        result = Dao.getAllStudents()
+        if result.get("code") == 0:
+            if result.get("data"):
+                # print(result.get("data"))
+                for values in result.get("data"):
+                    self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.insert('', END, values=list(values.values()))
+            else:
+                print("未查询到数据！")
+        else:
+            print("数据查询异常！")
+        print("<Button-1>事件未处理", evt)
+    def find(self, evt):
+
+
     def __event_bind(self):
         self.protocol('WM_DELETE_WINDOW', self.logout)
         self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.bind('<<TreeviewSelect>>', self.updateStudentInfo)
@@ -409,3 +434,4 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_2.tk_button_delete_score.bind('<Button-1>', self.deleteStudentScore)
         self.tk_tabs_content.tk_tabs_content_4.tk_button_update_tea_pwd.bind('<Button-1>', self.updateTeacherPassword)
         self.tk_button_logout_user.bind('<Button-1>', self.logout_user)
+        self.tk_tabs_content.tk_tabs_content_1.tk_button_stu_refresh.bind('<Button-1>', self.refresh)
