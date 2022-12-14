@@ -141,12 +141,13 @@ def deleteUser(uid):
     :return:
     """
     connection, cursor = getConnect()
-    sql = "delete from user where uid = %d"
+    sql = "delete from user where uid = %s"
     res = {
         "code": 0,
         "msg": "删除成功！"
     }
     try:
+        print(type(uid))
         cursor.execute(sql, uid)
         connection.commit()
     except Exception as e:
@@ -173,7 +174,7 @@ def updateUser(uid, uname, ugender, uidentify, uclid, uemail):
     :return:
     """
     connection, cursor = getConnect()
-    sql = "update user set uname = %s, ugender = %s, uidentify = %s, uclid = %s, uemail = %s where uid = %d"
+    sql = "update user set uname = %s, ugender = %s, uidentify = %s, uclid = %s, uemail = %s where uid = %s"
     res = {
         "code": 0,
         "msg": "修改成功！"

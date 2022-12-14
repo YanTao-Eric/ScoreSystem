@@ -5,7 +5,6 @@ from tkinter import messagebox
 
 import Dao
 import re
-import time
 
 
 class WinGUI(Tk):
@@ -27,7 +26,7 @@ class WinGUI(Tk):
         self.tk_input_email = self.__tk_input_email()
 
     def __win(self):
-        self.title("添加学生")
+        self.title("修改学生信息")
         # 设置窗口大小、居中
         width = 495
         height = 410
@@ -109,10 +108,17 @@ class WinGUI(Tk):
 
 
 class Win(WinGUI):
-    def __init__(self):
+    def __init__(self, current_uid):
         super().__init__()
+        self.current_uid = current_uid
         self.config(menu=self.create_menu())
         self.__event_bind()
+        result = Dao.getUserInfoById(current_uid)
+        self.uname_value.set(result.get('uname'))
+        self.uidentify_value.set(result.get('uidentify'))
+        self.uclid_value.set(result.get('uclid'))
+        self.email_value.set(result.get('uemail'))
+        print(result)
 
     def create_menu(self):
         menu = Menu(self, tearoff=False)
@@ -152,17 +158,11 @@ class Win(WinGUI):
         elif flag == 3:
             messagebox.showerror(title='错误', message='邮件不合法')
         else:
-            localtime = time.localtime(time.time())
-            if int(uclid) < 10:
-                idnumber = str(localtime[0]) + "0" + uclid
-            else:
-                idnumber = str(localtime[0]) + uclid
-            result = Dao.getMaxStuNumber(idnumber)
+            result = Dao.updateUser(self.current_uid, uname, usex, identityId, uclid, uEmail)
             if result.get("code") == 0:
-                if result.get("data"):
-                    idnumber = result.get("data")[0].get('max_id') + 1
-            if Dao.addStudent(idnumber, uname, usex, identityId, int(uclid), uEmail).get("code") == 0:
-                messagebox.showwarning(title='提示', message='插入成功')
+                messagebox.showinfo(title='提示', message='修改成功')
+            else:
+                messagebox.showwarning(title='提示', message='插入失败')
 
     def reset(self, evt):
         self.uname_value.set("")

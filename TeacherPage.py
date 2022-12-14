@@ -4,7 +4,8 @@ from tkinter.ttk import *
 
 import Dao
 import addstudent
-
+import deleteStudent
+import UpdateStudent
 
 class WinGUI(Tk):
     def __init__(self):
@@ -236,7 +237,6 @@ class Frame_content_2(Frame):
         self.tk_button_add_score = self.__tk_button_add_score()
         self.tk_button_delete_score = self.__tk_button_delete_score()
 
-
     def __frame(self):
         self.place(x=0, y=100, width=1000, height=500)
 
@@ -293,6 +293,7 @@ class Frame_content_3(Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.__frame()
+
 
     def __frame(self):
         self.place(x=0, y=100, width=1000, height=500)
@@ -357,13 +358,20 @@ class Win(WinGUI):
 
     def logout(self):
         try:
+            self.updateStudent.destroy()
             self.addInfo.destroy()
+            self.delete.destroy()
         except:
             print("")
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
 
     def updateStudentInfo(self, evt):
+        current_focus = self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.focus()
+        current_studentinfo = self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.set(current_focus)
+        current_uid = current_studentinfo.get('学号')
+        self.updateStudent = UpdateStudent.Win(current_uid)
+        self.updateStudent.mainloop()
         print("<<TreeviewSelect>>事件未处理", evt)
 
     def updateTeacherInfo(self, evt):
@@ -387,6 +395,8 @@ class Win(WinGUI):
         print("<Button-1>事件未处理", evt)
 
     def deleteStudentInfo(self, evt):
+        self.delete = deleteStudent.Win()
+        self.delete.mainloop()
         print("<Button-1>事件未处理", evt)
 
     def addStudentScore(self, evt):
@@ -404,20 +414,42 @@ class Win(WinGUI):
 
     def refresh(self, evt):
         # 删除原结点，加入新结点
-        for _ in map(self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.delete, self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.get_children("")):
+        for _ in map(self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.delete,
+                     self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.get_children("")):
             pass
         result = Dao.getAllStudents()
         if result.get("code") == 0:
             if result.get("data"):
                 # print(result.get("data"))
                 for values in result.get("data"):
-                    self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.insert('', END, values=list(values.values()))
+                    self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.insert('', END,
+                                                                                         values=list(values.values()))
             else:
                 print("未查询到数据！")
         else:
             print("数据查询异常！")
-        print("<Button-1>事件未处理", evt)
-    def find(self, evt):
+
+    def search(self, evt):
+        for _ in map(self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.delete,
+                     self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.get_children("")):
+            pass
+        value = self.tk_tabs_content.tk_tabs_content_1.tk_input_stu_name.get()
+        num = self.tk_tabs_content.tk_tabs_content_1.tk_select_box_stu_gender.get()
+        print(num, value)
+        if num == '全部':
+            result = Dao.searchStudents(value, '')
+        else:
+            result = Dao.searchStudents(value, num)
+        if result.get("code") == 0:
+            if result.get("data"):
+                # print(result.get("data"))
+                for values in result.get("data"):
+                    self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.insert('', END,
+                                                                                         values=list(values.values()))
+            else:
+                print("未查询到数据！")
+        else:
+            print("数据查询异常！")
 
 
     def __event_bind(self):
@@ -435,3 +467,4 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_4.tk_button_update_tea_pwd.bind('<Button-1>', self.updateTeacherPassword)
         self.tk_button_logout_user.bind('<Button-1>', self.logout_user)
         self.tk_tabs_content.tk_tabs_content_1.tk_button_stu_refresh.bind('<Button-1>', self.refresh)
+        self.tk_tabs_content.tk_tabs_content_1.tk_button_stu_search.bind('<Button-1>', self.search)
