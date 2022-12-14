@@ -43,9 +43,9 @@ def getUserInfoById(uid):
     return res
 
 
-def getScoreByUserId(username):
+def getScoreByUserId(uid):
     conn, cursor = getConnect()
-    sql = "select cid, cname, ccredit, dn.ddtvalue, d.dname, dm.ddtvalue, 100 as score from course c inner join dictionary dn on dn.ddtype='nature' and c.cnid = dn.ddtkey inner join department d on c.cdid = d.did inner join dictionary dm on dm.ddtype='exammethod' and c.cmid = dm.ddtkey order by cid"
+    sql = f"select ROW_NUMBER() over () as id, uc.cname, c.ccredit, c.cnature, c.cdepartment, c.cexammethod, score from user_course uc inner join course c on uc.cname = c.cname where uc.uid = '{uid}'"
     cursor.execute(sql, ())
     res = cursor.fetchall()
     cursor.close()
@@ -81,6 +81,27 @@ def getAllStudents():
     return res
 
 
+def searchStudents(uname, ugender):
+    """
+    学生信息搜索
+    :param uname:
+    :param ugender:
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select row_number() over () as id, uid, uname, ugender, uidentify, uclid, uemail, upwd, urole from user " \
+          f"where urole = 1 and uname like '%{uname}%' and ugender = '{ugender}'"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
 def addStudent(uid, uname, ugender, uidentify, uclid, uemail):
     """
     添加一个学生信息，密码默认为123456
@@ -93,7 +114,7 @@ def addStudent(uid, uname, ugender, uidentify, uclid, uemail):
     :return:
     """
     connection, cursor = getConnect()
-    sql = "insert into user(uid, uname, ugender, uidentify, uclid, uemail, upwd) values (%d, %s, %d, %s, %d, %s, %s) "
+    sql = "insert into user(uid, uname, ugender, uidentify, uclid, uemail, upwd) values (%d, %s, %s, %s, %d, %s, %s) "
     res = {
         "code": 0,
         "msg": "添加成功！"
@@ -172,17 +193,35 @@ def updateUser(uid, uname, ugender, uidentify, uclid, uemail):
     return res
 
 
+# def getAllCourses():
+#     """
+#     获取所有的课程信息
+#     :return:
+#     """
+#     connection, cursor = getConnect()
+#     sql = '''select row_number() over () as id, cname, ccredit, da.ddtvalue as nature, d.dname, db.ddtvalue
+#             from course c
+#             inner join dictionary da on c.cnid = da.ddtkey and da.ddtype = 'nature'
+#             inner join dictionary db on c.cmid = db.ddtkey and db.ddtype = 'exammethod'
+#             inner join department d on c.cdid = d.did'''
+#     cursor.execute(sql)
+#     res = {
+#         "code": 0,
+#         "msg": "success",
+#         "data": cursor.fetchall()
+#     }
+#     cursor.close()
+#     connection.close()
+#     return res
+
+
 def getAllCourses():
     """
     获取所有的课程信息
     :return:
     """
     connection, cursor = getConnect()
-    sql = '''select row_number() over () as id, cname, ccredit, da.ddtvalue as nature, d.dname, db.ddtvalue
-            from course c
-            inner join dictionary da on c.cnid = da.ddtkey and da.ddtype = 'nature'
-            inner join dictionary db on c.cmid = db.ddtkey and db.ddtype = 'exammethod'
-            inner join department d on c.cdid = d.did'''
+    sql = '''select row_number() over () as id, cname, ccredit, cnature, cdepartment, cexammethod from course'''
     cursor.execute(sql)
     res = {
         "code": 0,
@@ -261,6 +300,33 @@ def getMaxStuNumber(s_num_prefix):
         "msg": "success",
         "data": cursor.fetchall()
     }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def addCourse(cname, nature, credit, department, exam_method):
+    """
+    添加成绩
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"insert into course(cname, cnature, ccredit, cdepartment, cexammethod) VALUES ('{cname}', '{nature}'" \
+          f", '{credit}', '{department}', '{exam_method}')"
+    res = {
+        "code": 0,
+        "msg": "添加课程成功！"
+    }
+    try:
+        cursor.execute(sql)
+        connection.commit()
+    except Exception as e:
+        res = {
+            "code": 1,
+            "msg": "添加课程失败！"
+        }
+        connection.rollback()
+        print(e)
     cursor.close()
     connection.close()
     return res

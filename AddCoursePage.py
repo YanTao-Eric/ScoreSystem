@@ -39,7 +39,8 @@ class WinGUI(Tk):
         return label
 
     def __tk_input_course_name(self):
-        ipt = Entry(self)
+        self.course_name = StringVar(self)
+        ipt = Entry(self, text=self.course_name)
         ipt.place(x=290, y=50, width=150, height=30)
         return ipt
 
@@ -54,7 +55,8 @@ class WinGUI(Tk):
         return label
 
     def __tk_input_course_credit(self):
-        ipt = Entry(self)
+        self.course_credit = StringVar(self)
+        ipt = Entry(self, text=self.course_credit)
         ipt.place(x=290, y=170, width=150, height=30)
         return ipt
 
@@ -79,15 +81,11 @@ class WinGUI(Tk):
         return btn
 
     def __tk_select_box_course_nature(self):
-        var = StringVar(self)
-        cb = Combobox(self, state="readonly",  textvariable=var)
-        keys = []
+        cb = Combobox(self, state="readonly")
         values = []
         for i in Dao.getAllCourseNatures().get("data"):
-            keys.append(i.get("k"))
             values.append(i.get("v"))
         cb['values'] = values
-        var.set(keys)
         cb.current(0)
         cb.place(x=290, y=110, width=150, height=30)
         return cb
@@ -121,7 +119,6 @@ class Win(WinGUI):
 
     def create_menu(self):
         menu = Menu(self, tearoff=False)
-        menu.add_command(label='文件')
         return menu
 
     def addCourse(self, evt):
@@ -130,16 +127,25 @@ class Win(WinGUI):
         __course_credit = self.tk_input_course_credit.get()
         __course_department = self.tk_select_box_course_department.get()
         __course_exam_method = self.tk_select_box_course_exam_method.get()
-        print(__course_nature)
         if not __course_name:
             messagebox.showerror("错误", "课程名称为空！")
         elif not re.findall(r'^[0-8]\.[0,5]$', __course_credit):
             messagebox.showerror("错误", "学分格式不合法！")
         else:
-            print("正在进行添加课程操作！", evt)
+            res = Dao.addCourse(__course_name, __course_nature, __course_credit, __course_department, __course_exam_method)
+            if res.get("code") == 0:
+                messagebox.showwarning("提示", res.get("msg"))
+                self.destroy()
+            else:
+                messagebox.showwarning("提示", res.get("msg"))
 
     def resetCourse(self, evt):
-        print("<Button-1>事件未处理", evt)
+        self.course_name.set('')
+        self.tk_select_box_course_nature.current(0)
+        self.course_credit.set('')
+        self.tk_select_box_course_department.current(0)
+        self.tk_select_box_course_exam_method.current(0)
+        print("重置成功！", evt)
 
     def __event_bind(self):
         self.tk_button_add_course.bind('<Button-1>', self.addCourse)
