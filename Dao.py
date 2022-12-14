@@ -114,7 +114,7 @@ def addStudent(uid, uname, ugender, uidentify, uclid, uemail):
     :return:
     """
     connection, cursor = getConnect()
-    sql = "insert into user(uid, uname, ugender, uidentify, uclid, uemail, upwd) values (%d, %s, %s, %s, %d, %s, %s) "
+    sql = "insert into user(uid, uname, ugender, uidentify, uclid, uemail, upwd) values (%s, %s, %s, %s, %s, %s, %s) "
     res = {
         "code": 0,
         "msg": "添加成功！"

@@ -11,7 +11,7 @@
  Target Server Version : 80022
  File Encoding         : 65001
 
- Date: 12/12/2022 21:54:23
+ Date: 14/12/2022 10:44:52
 */
 
 SET NAMES utf8mb4;
@@ -50,26 +50,28 @@ DROP TABLE IF EXISTS `course`;
 CREATE TABLE `course`  (
   `cid` int NOT NULL AUTO_INCREMENT COMMENT '课程代码',
   `cname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '课程名称',
-  `cnid` int NOT NULL COMMENT '课程性质',
-  `ccredit` float NOT NULL COMMENT '学分',
-  `cdid` int NOT NULL COMMENT '开课学院',
-  `cmid` int NOT NULL COMMENT '考试方式',
+  `cnature` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '课程性质',
+  `ccredit` decimal(3, 1) NOT NULL COMMENT '学分',
+  `cdepartment` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '开课学院',
+  `cexammethod` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '考试方式',
   PRIMARY KEY (`cid`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of course
 -- ----------------------------
-INSERT INTO `course` VALUES (1, '大数据程序设计(Python)', 4, 3, 1, 2);
-INSERT INTO `course` VALUES (2, '数据结构与算法', 3, 5, 1, 1);
-INSERT INTO `course` VALUES (3, '软件工程', 3, 3.5, 1, 1);
-INSERT INTO `course` VALUES (4, '计算机网络原理', 3, 3.5, 1, 1);
-INSERT INTO `course` VALUES (5, '程序设计基础(网)', 3, 3, 1, 1);
-INSERT INTO `course` VALUES (6, 'Linux编程及应用', 4, 3.5, 1, 2);
-INSERT INTO `course` VALUES (7, 'WEB前端开发', 4, 2.5, 1, 2);
-INSERT INTO `course` VALUES (8, '机械趣味模型', 5, 2, 4, 2);
-INSERT INTO `course` VALUES (9, '应用微生物学', 5, 2, 11, 2);
-INSERT INTO `course` VALUES (10, '创新性思维与方法', 5, 2, 16, 2);
+INSERT INTO `course` VALUES (1, '大数据程序设计(Python)', '专业选修课', 3.0, '人工智能与大数据学部', '考查');
+INSERT INTO `course` VALUES (2, '数据结构与算法', '专业必修课', 5.0, '人工智能与大数据学部', '考试');
+INSERT INTO `course` VALUES (3, '软件工程', '专业必修课', 3.5, '人工智能与大数据学部', '考试');
+INSERT INTO `course` VALUES (4, '计算机网络原理', '专业必修课', 3.5, '人工智能与大数据学部', '考试');
+INSERT INTO `course` VALUES (5, '程序设计基础(网)', '专业必修课', 3.0, '人工智能与大数据学部', '考试');
+INSERT INTO `course` VALUES (6, 'Linux编程及应用', '专业选修课', 3.5, '人工智能与大数据学部', '考查');
+INSERT INTO `course` VALUES (7, 'WEB前端开发', '专业选修课', 2.5, '人工智能与大数据学部', '考查');
+INSERT INTO `course` VALUES (8, '机械趣味模型', '通识课', 2.0, '智能制造学部', '考查');
+INSERT INTO `course` VALUES (9, '应用微生物学', '通识课', 2.0, '农林与食品工程学部', '考查');
+INSERT INTO `course` VALUES (10, '创新性思维与方法', '通识课', 2.0, '创新创业学院（继续教育学院）', '考查');
+INSERT INTO `course` VALUES (11, 'Java课程设计', '专业必修课', 4.0, '人工智能与大数据学部', '考试');
+INSERT INTO `course` VALUES (19, 'JavaEE企业开发', '专业选修课', 4.0, '人工智能与大数据学部', '考查');
 
 -- ----------------------------
 -- Table structure for department
@@ -85,7 +87,7 @@ CREATE TABLE `department`  (
 -- Records of department
 -- ----------------------------
 INSERT INTO `department` VALUES (1, '人工智能与大数据学部');
-INSERT INTO `department` VALUES (2, '	经济与工商管理学部');
+INSERT INTO `department` VALUES (2, '经济与工商管理学部');
 INSERT INTO `department` VALUES (3, '文学与音乐艺术学部');
 INSERT INTO `department` VALUES (4, '智能制造学部');
 INSERT INTO `department` VALUES (5, '教育学部');
@@ -179,7 +181,7 @@ CREATE TABLE `user`  (
   `upwd` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '密码',
   `urole` int NOT NULL DEFAULT 1 COMMENT '用户的角色',
   PRIMARY KEY (`uid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 220003 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user
@@ -188,6 +190,7 @@ INSERT INTO `user` VALUES (200001, 'Alice', '女', '513721200111111234', 9, 'ali
 INSERT INTO `user` VALUES (200002, 'Jobs', '男', NULL, 1, NULL, '123456', 1);
 INSERT INTO `user` VALUES (220001, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
 INSERT INTO `user` VALUES (220002, 'Steve', '男', '123456789012345678', 9, '471404371@qq.com', '123456', 0);
+INSERT INTO `user` VALUES (220003, 'qw', '男', '123456789', 9, '123456@qw', '123456', 1);
 
 -- ----------------------------
 -- Table structure for user_course
@@ -195,34 +198,34 @@ INSERT INTO `user` VALUES (220002, 'Steve', '男', '123456789012345678', 9, '471
 DROP TABLE IF EXISTS `user_course`;
 CREATE TABLE `user_course`  (
   `ucid` int NOT NULL AUTO_INCREMENT COMMENT '学生-课程id',
-  `uid` int NOT NULL,
-  `cid` int NOT NULL,
-  `score` decimal(6, 2) NULL DEFAULT NULL,
+  `uid` int NOT NULL COMMENT '学号',
+  `cname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '课程名',
+  `score` decimal(6, 2) NULL DEFAULT NULL COMMENT '成绩',
   PRIMARY KEY (`ucid`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_course
 -- ----------------------------
-INSERT INTO `user_course` VALUES (1, 200001, 1, NULL);
-INSERT INTO `user_course` VALUES (2, 200001, 2, NULL);
-INSERT INTO `user_course` VALUES (3, 200001, 3, NULL);
-INSERT INTO `user_course` VALUES (4, 200001, 4, NULL);
-INSERT INTO `user_course` VALUES (5, 200001, 5, NULL);
-INSERT INTO `user_course` VALUES (6, 200001, 6, NULL);
-INSERT INTO `user_course` VALUES (7, 200001, 7, NULL);
-INSERT INTO `user_course` VALUES (8, 200001, 8, NULL);
-INSERT INTO `user_course` VALUES (9, 200001, 9, NULL);
-INSERT INTO `user_course` VALUES (10, 200001, 10, NULL);
-INSERT INTO `user_course` VALUES (11, 200002, 1, NULL);
-INSERT INTO `user_course` VALUES (12, 200002, 2, NULL);
-INSERT INTO `user_course` VALUES (13, 200002, 3, NULL);
-INSERT INTO `user_course` VALUES (14, 200002, 4, NULL);
-INSERT INTO `user_course` VALUES (15, 200002, 5, NULL);
-INSERT INTO `user_course` VALUES (16, 200002, 6, NULL);
-INSERT INTO `user_course` VALUES (17, 200002, 7, NULL);
-INSERT INTO `user_course` VALUES (18, 200002, 8, NULL);
-INSERT INTO `user_course` VALUES (19, 200002, 9, NULL);
-INSERT INTO `user_course` VALUES (20, 200002, 10, NULL);
+INSERT INTO `user_course` VALUES (1, 200001, '大数据程序设计(Python)', NULL);
+INSERT INTO `user_course` VALUES (2, 200001, '数据结构与算法', NULL);
+INSERT INTO `user_course` VALUES (3, 200001, '软件工程', NULL);
+INSERT INTO `user_course` VALUES (4, 200001, '计算机网络原理', NULL);
+INSERT INTO `user_course` VALUES (5, 200001, '程序设计基础(网)', NULL);
+INSERT INTO `user_course` VALUES (6, 200001, 'Linux编程及应用', NULL);
+INSERT INTO `user_course` VALUES (7, 200001, 'WEB前端开发', NULL);
+INSERT INTO `user_course` VALUES (8, 200001, '机械趣味模型', NULL);
+INSERT INTO `user_course` VALUES (9, 200001, '应用微生物学', NULL);
+INSERT INTO `user_course` VALUES (10, 200001, '创新性思维与方法', NULL);
+INSERT INTO `user_course` VALUES (11, 200002, '大数据程序设计(Python)', NULL);
+INSERT INTO `user_course` VALUES (12, 200002, '数据结构与算法', NULL);
+INSERT INTO `user_course` VALUES (13, 200002, '软件工程', NULL);
+INSERT INTO `user_course` VALUES (14, 200002, '计算机网络原理', NULL);
+INSERT INTO `user_course` VALUES (15, 200002, '程序设计基础(网)', NULL);
+INSERT INTO `user_course` VALUES (16, 200002, 'Linux编程及应用', NULL);
+INSERT INTO `user_course` VALUES (17, 200002, 'WEB前端开发', NULL);
+INSERT INTO `user_course` VALUES (18, 200002, '机械趣味模型', NULL);
+INSERT INTO `user_course` VALUES (19, 200002, '应用微生物学', NULL);
+INSERT INTO `user_course` VALUES (20, 200002, '创新性思维与方法', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
