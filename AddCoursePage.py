@@ -83,7 +83,7 @@ class WinGUI(Tk):
     def __tk_select_box_course_nature(self):
         cb = Combobox(self, state="readonly")
         values = []
-        for i in Dao.getAllCourseNatures().get("data"):
+        for i in Dao.getDataDictByType("nature").get("data"):
             values.append(i.get("v"))
         cb['values'] = values
         cb.current(0)
@@ -103,7 +103,7 @@ class WinGUI(Tk):
     def __tk_select_box_course_exam_method(self):
         cb = Combobox(self, state="readonly")
         values = []
-        for i in Dao.getAllExamMethods().get("data"):
+        for i in Dao.getDataDictByType("exammethod").get("data"):
             values.append(i.get("v"))
         cb['values'] = values
         cb.current(0)

@@ -21,8 +21,9 @@ def getConnect():
 
 def getUserByIdAndPwd(username, password):
     conn, cursor = getConnect()
-    sql = 'select uid, uname, ugender, uidentify, uclid, uemail, urole from user where uid=%s and upwd=%s'
-    cursor.execute(sql, (username, password))
+    sql = f"select uid, uname, ugender, uidentify, uclid, uemail, urole from user where uid='{username}' " \
+          f"and upwd='{password}'"
+    cursor.execute(sql)
     res = {
         "code": 0,
         "msg": "success",
@@ -35,7 +36,7 @@ def getUserByIdAndPwd(username, password):
 
 def getUserInfoById(uid):
     conn, cursor = getConnect()
-    sql = 'select uid, uname, ugender, uidentify, uclid, uemail, urole from user where uid=%s'
+    sql = f"select uid, uname, ugender, uidentify, uclid, uemail, urole from user where uid='{uid}'"
     cursor.execute(sql, uid)
     res = cursor.fetchone()
     cursor.close()
@@ -45,7 +46,8 @@ def getUserInfoById(uid):
 
 def getScoreByUserId(uid):
     conn, cursor = getConnect()
-    sql = f"select ROW_NUMBER() over () as id, uc.cname, c.ccredit, c.cnature, c.cdepartment, c.cexammethod, score from user_course uc inner join course c on uc.cname = c.cname where uc.uid = '{uid}'"
+    sql = f"select ROW_NUMBER() over () as id, uc.cname, c.ccredit, c.cnature, c.cdepartment, c.cexammethod, score " \
+          f"from user_course uc inner join course c on uc.cname = c.cname where uc.uid = '{uid}'"
     cursor.execute(sql, ())
     res = cursor.fetchall()
     cursor.close()
@@ -69,7 +71,8 @@ def getAllUsers():
 
 def getAllStudents():
     connection, cursor = getConnect()
-    sql = 'select row_number() over () as id, uid, uname, ugender, uidentify, uclid, uemail, upwd, urole from user where urole = 1'
+    sql = 'select row_number() over () as id, uid, uname, ugender, uidentify, uclid, uemail, upwd, urole ' \
+          'from user where urole = 1'
     cursor.execute(sql)
     res = {
         "code": 0,
@@ -114,13 +117,14 @@ def addStudent(uid, uname, ugender, uidentify, uclid, uemail):
     :return:
     """
     connection, cursor = getConnect()
-    sql = "insert into user(uid, uname, ugender, uidentify, uclid, uemail, upwd) values (%s, %s, %s, %s, %s, %s, %s) "
+    sql = f"insert into user(uid, uname, ugender, uidentify, uclid, uemail, upwd) values ('{uid}', '{uname}'" \
+          f", '{ugender}', '{uidentify}', '{uclid}', '{uemail}', '123456') "
     res = {
         "code": 0,
         "msg": "添加成功！"
     }
     try:
-        cursor.execute(sql, (uid, uname, ugender, uidentify, uclid, uemail, '123456'))
+        cursor.execute(sql)
         connection.commit()
     except Exception as e:
         res = {
@@ -141,13 +145,13 @@ def deleteUser(uid):
     :return:
     """
     connection, cursor = getConnect()
-    sql = "delete from user where uid = %d"
+    sql = f"delete from user where uid = '{uid}'"
     res = {
         "code": 0,
         "msg": "删除成功！"
     }
     try:
-        cursor.execute(sql, uid)
+        cursor.execute(sql)
         connection.commit()
     except Exception as e:
         res = {
@@ -173,13 +177,14 @@ def updateUser(uid, uname, ugender, uidentify, uclid, uemail):
     :return:
     """
     connection, cursor = getConnect()
-    sql = "update user set uname = %s, ugender = %s, uidentify = %s, uclid = %s, uemail = %s where uid = %d"
+    sql = f"update user set uname = '{uid}', ugender = '{uname}', uidentify = '{uidentify}', uclid = '{ugender}'" \
+          f", uemail ='{uemail}' where uid = '{uid}'"
     res = {
         "code": 0,
         "msg": "修改成功！"
     }
     try:
-        cursor.execute(sql, (uname, ugender, uidentify, uclid, uemail, uid))
+        cursor.execute(sql, )
         connection.commit()
     except Exception as e:
         res = {
@@ -193,35 +198,13 @@ def updateUser(uid, uname, ugender, uidentify, uclid, uemail):
     return res
 
 
-# def getAllCourses():
-#     """
-#     获取所有的课程信息
-#     :return:
-#     """
-#     connection, cursor = getConnect()
-#     sql = '''select row_number() over () as id, cname, ccredit, da.ddtvalue as nature, d.dname, db.ddtvalue
-#             from course c
-#             inner join dictionary da on c.cnid = da.ddtkey and da.ddtype = 'nature'
-#             inner join dictionary db on c.cmid = db.ddtkey and db.ddtype = 'exammethod'
-#             inner join department d on c.cdid = d.did'''
-#     cursor.execute(sql)
-#     res = {
-#         "code": 0,
-#         "msg": "success",
-#         "data": cursor.fetchall()
-#     }
-#     cursor.close()
-#     connection.close()
-#     return res
-
-
 def getAllCourses():
     """
     获取所有的课程信息
     :return:
     """
     connection, cursor = getConnect()
-    sql = '''select cid, cname, ccredit, cnature, cdepartment, cexammethod from course'''
+    sql = "select cid, cname, ccredit, cnature, cdepartment, cexammethod from course"
     cursor.execute(sql)
     res = {
         "code": 0,
@@ -251,31 +234,14 @@ def getCourseByCid(cid):
     return res
 
 
-def getAllExamMethods():
+def getDataDictByType(dtype):
     """
-    获取所有的课程考核方式
+    获取dtype类型的数据字典
+    :param:
     :return:
     """
     connection, cursor = getConnect()
-    sql = "select d.ddtkey as k, d.ddtvalue as v from dictionary d where d.ddtype = 'exammethod'"
-    cursor.execute(sql)
-    res = {
-        "code": 0,
-        "msg": "success",
-        "data": cursor.fetchall()
-    }
-    cursor.close()
-    connection.close()
-    return res
-
-
-def getAllCourseNatures():
-    """
-    获取所有的课程性质
-    :return:
-    """
-    connection, cursor = getConnect()
-    sql = "select d.ddtkey as k, d.ddtvalue as v from dictionary d where d.ddtype = 'nature'"
+    sql = f"select d.ddtkey as k, d.ddtvalue as v from dictionary d where d.ddtype = '{dtype}'"
     cursor.execute(sql)
     res = {
         "code": 0,
