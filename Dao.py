@@ -90,7 +90,7 @@ def searchStudents(uname, ugender):
     """
     connection, cursor = getConnect()
     sql = f"select row_number() over () as id, uid, uname, ugender, uidentify, uclid, uemail, upwd, urole from user " \
-          f"where urole = 1 and uname like '%{uname}%' and ugender = '{ugender}'"
+          f"where urole = 1 and uname like '%{uname}%' and ugender like '%{ugender}%'"
     cursor.execute(sql)
     res = {
         "code": 0,
