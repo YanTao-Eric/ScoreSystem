@@ -3,6 +3,7 @@ from tkinter import messagebox
 from tkinter.ttk import *
 
 import Dao
+import Login
 
 
 class WinGUI(Tk):
@@ -253,7 +254,7 @@ class Frame_content_3(Frame):
         return label
 
     def __tk_input_original_password(self):
-        ipt = Entry(self)
+        ipt = Entry(self, show='*')
         ipt.place(x=490, y=40, width=150, height=30)
         return ipt
 
@@ -263,7 +264,7 @@ class Frame_content_3(Frame):
         return label
 
     def __tk_input_new_password(self):
-        ipt = Entry(self)
+        ipt = Entry(self, show='*')
         ipt.place(x=490, y=110, width=150, height=30)
         return ipt
 
@@ -273,7 +274,7 @@ class Frame_content_3(Frame):
         return label
 
     def __tk_input_confirm_password(self):
-        ipt = Entry(self)
+        ipt = Entry(self, show='*')
         ipt.place(x=490, y=180, width=150, height=30)
         return ipt
 
@@ -287,6 +288,7 @@ class Win(WinGUI):
     def __init__(self, current_user):
         super().__init__()
         self.__event_bind()
+        self.uid = current_user.get("uid")
         self.tk_label_current_user['text'] = "当前用户：" + current_user.get("uname")
         self.tk_tabs_content.tk_tabs_content_0.student_number.set(current_user.get("uid"))
         self.tk_tabs_content.tk_tabs_content_0.student_name.set(current_user.get("uname"))
@@ -303,7 +305,7 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_0.tk_tk_select_stu_gender.get()
         self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_identity.get()
         self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_email.get()
-        print("<Button-1>事件未处理", evt)
+        print("更新学生信息", evt)
 
     def stu_reset(self, evt):
         self.tk_tabs_content.tk_tabs_content_0.student_number.set(self.userInfo[0])
@@ -319,7 +321,27 @@ class Win(WinGUI):
         print("<Button-1>事件未处理", evt)
 
     def updateStudentPassword(self, evt):
-        print("<Button-1>事件未处理", evt)
+        __original_pwd = self.tk_tabs_content.tk_tabs_content_3.tk_input_original_password.get()
+        __new_pwd = self.tk_tabs_content.tk_tabs_content_3.tk_input_new_password.get()
+        __confirm_pwd = self.tk_tabs_content.tk_tabs_content_3.tk_input_confirm_password.get()
+        if __original_pwd == '' or __new_pwd == '' or __confirm_pwd == '':
+            messagebox.showwarning("提示", "必填项未填写！")
+            return
+        if not re.match(r"^[0-9a-zA-Z~!@#$%^&*._?]{6,18}$", __original_pwd) \
+                or not re.match(r"^[0-9a-zA-Z~!@#$%^&*._?]{6,18}$", __new_pwd) \
+                or not re.match(r"^[0-9a-zA-Z~!@#$%^&*._?]{6,18}$", __confirm_pwd):
+            messagebox.showwarning("提示", "密码格式应为6-18位数字、字母、特殊字符的组合！")
+            return
+        if __new_pwd != __confirm_pwd:
+            messagebox.showwarning("提示", "两次密码输入不一致")
+            return
+        res = Dao.updatePassword(self.uid, __original_pwd, __new_pwd)
+        messagebox.showinfo("提示", res.get("msg"))
+        if res.get("code") == 0:
+            self.destroy()
+            login = Login.Win()
+            login.mainloop()
+        print("修改密码", evt)
 
     def logout_user(self, evt):
         messagebox.showwarning('提示', '欢迎下次使用！')

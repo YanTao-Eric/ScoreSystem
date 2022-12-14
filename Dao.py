@@ -37,18 +37,44 @@ def getUserByIdAndPwd(username, password):
 def getUserInfoById(uid):
     conn, cursor = getConnect()
     sql = f"select uid, uname, ugender, uidentify, uclid, uemail, urole from user where uid='{uid}'"
-    cursor.execute(sql, uid)
+    cursor.execute(sql)
     res = cursor.fetchone()
     cursor.close()
     conn.close()
     return res
 
 
-def getScoreByUserId(uid):
+def updatePassword(uid, origin_pwd, new_pwd):
+    conn, cursor = getConnect()
+    res = {
+        "code": 1,
+        "msg": "修改密码失败！"
+    }
+    if not getUserByIdAndPwd(uid, origin_pwd).get("data"):
+        res = {
+            "code": 1,
+            "msg": "原密码不正确！"
+        }
+    else:
+        sql = f"update user set upwd = '{new_pwd}' where uid = '{uid}'"
+        try:
+            cursor.execute(sql)
+            conn.commit()
+            res = {
+                "code": 0,
+                "msg": "修改成功！"
+            }
+        except Exception as e:
+            conn.rollback()
+            print(e)
+    return res
+
+
+def getScoreByUid(uid):
     conn, cursor = getConnect()
     sql = f"select ROW_NUMBER() over () as id, uc.cname, c.ccredit, c.cnature, c.cdepartment, c.cexammethod, score " \
           f"from user_course uc inner join course c on uc.cname = c.cname where uc.uid = '{uid}'"
-    cursor.execute(sql, ())
+    cursor.execute(sql)
     res = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -71,8 +97,7 @@ def getAllUsers():
 
 def getAllStudents():
     connection, cursor = getConnect()
-    sql = 'select row_number() over () as id, uid, uname, ugender, uidentify, uclid, uemail, upwd, urole ' \
-          'from user where urole = 1'
+    sql = "select row_number() over () as id, uid, uname, ugender, uidentify, uclid, uemail from user where urole = 1"
     cursor.execute(sql)
     res = {
         "code": 0,
@@ -184,7 +209,7 @@ def updateUser(uid, uname, ugender, uidentify, uclid, uemail):
         "msg": "修改成功！"
     }
     try:
-        cursor.execute(sql, )
+        cursor.execute(sql)
         connection.commit()
     except Exception as e:
         res = {
