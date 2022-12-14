@@ -169,16 +169,17 @@ class Frame_content_1(Frame):
         self.tk_button_addStudent = self.__tk_button_addStudent()
         self.tk_button_delete_student = self.__tk_button_delete_student()
         self.tk_button_stu_refresh = self.__tk_button_stu_refresh()
+        self.tk_button_studentinfo_export = self.__tk_button_studentinfo_export()
 
     def __frame(self):
         self.place(x=0, y=100, width=1000, height=500)
 
     def __tk_table_student_query(self):
         # 表头字段 表头宽度
-        columns = {"ID": 50, "学号": 150, "姓名": 150, '性别': 150, '身份证号': 150, '班级': 150, '邮箱': 150}
+        self.tk_table_student_manage_columns = {"ID": 50, "学号": 150, "姓名": 150, '性别': 150, '身份证号': 150, '班级': 150, '邮箱': 150}
         # 初始化表格 表格是基于Treeview，tkinter本身没有表格。show="headings" 为隐藏首列。
-        tk_table = Treeview(self, show="headings", columns=list(columns))
-        for text, width in columns.items():  # 批量设置列属性
+        tk_table = Treeview(self, show="headings", columns=list(self.tk_table_student_manage_columns))
+        for text, width in self.tk_table_student_manage_columns.items():  # 批量设置列属性
             tk_table.heading(text, text=text, anchor='center')
             tk_table.column(text, anchor='center', width=width, stretch=False)  # stretch 不自动拉伸
 
@@ -189,11 +190,11 @@ class Frame_content_1(Frame):
         # ]
         #
         # # 导入初始数据
-        result = Dao.getAllStudents()
-        if result.get("code") == 0:
-            if result.get("data"):
-                print(result.get("data"))
-                for values in result.get("data"):
+        self.tk_student_table_dataset = Dao.getAllStudents()
+        if self.tk_student_table_dataset.get("code") == 0:
+            if self.tk_student_table_dataset.get("data"):
+                print(self.tk_student_table_dataset.get("data"))
+                for values in self.tk_student_table_dataset.get("data"):
                     tk_table.insert('', END, values=list(values.values()))
             else:
                 print("未查询到数据！")
@@ -216,12 +217,12 @@ class Frame_content_1(Frame):
 
     def __tk_button_stu_search(self):
         btn = Button(self, text="搜索")
-        btn.place(x=720, y=10, width=100, height=30)
+        btn.place(x=720, y=10, width=70, height=30)
         return btn
 
     def __tk_button_stu_refresh(self):
         btn = Button(self, text="刷新")
-        btn.place(x=820, y=10, width=100, height=30)
+        btn.place(x=820, y=10, width=70, height=30)
         return btn
 
     def __tk_button_addStudent(self):
@@ -232,6 +233,11 @@ class Frame_content_1(Frame):
     def __tk_button_delete_student(self):
         btn = Button(self, text="删除学生")
         btn.place(x=180, y=10, width=100, height=30)
+        return btn
+
+    def __tk_button_studentinfo_export(self):
+        btn = Button(self, text="导出")
+        btn.place(x=920, y=10, width=50, height=30)
         return btn
 
 
@@ -549,7 +555,7 @@ class Win(WinGUI):
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
 
-    def refresh(self, evt):
+    def studentinfo_refresh(self, evt):
         # 删除原结点，加入新结点
         for _ in map(self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.delete,
                      self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.get_children("")):
@@ -566,7 +572,7 @@ class Win(WinGUI):
         else:
             print("数据查询异常！")
 
-    def search(self, evt):
+    def studentinfo_search(self, evt):
         for _ in map(self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.delete,
                      self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.get_children("")):
             pass
@@ -588,6 +594,23 @@ class Win(WinGUI):
         else:
             print("数据查询异常！")
 
+    def studentinfo_export(self, evt):
+        path = filedialog.askdirectory()
+        try:
+            book = openpyxl.Workbook()
+            sheet = book.active
+            fff = list(self.tk_tabs_content.tk_tabs_content_1.tk_table_student_manage_columns.keys())  # 获取表头信息
+            sheet.append(fff)
+            dataset = [list(data_item.values()) for data_item in
+                       self.tk_tabs_content.tk_tabs_content_1.tk_student_table_dataset.get("data")]
+            print(dataset)
+            for i in dataset:
+                sheet.append(i)
+            book.save(path + "/student_info.xlsx")
+            messagebox.showinfo("提示", "导出成功！")
+        except Exception as e:
+            messagebox.showinfo("提示", "导出失败！")
+            print(e)
 
     def __event_bind(self):
         self.protocol('WM_DELETE_WINDOW', self.logout)
@@ -608,5 +631,6 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_5.tk_button_course_export.bind('<Button-1>', self.exportCourseInfo)
         self.tk_tabs_content.tk_tabs_content_5.tk_table_course_manage.bind('<<TreeviewSelect>>', self.updateCourseInfo)
         self.tk_button_logout_user.bind('<Button-1>', self.logout_user)
-        self.tk_tabs_content.tk_tabs_content_1.tk_button_stu_refresh.bind('<Button-1>', self.refresh)
-        self.tk_tabs_content.tk_tabs_content_1.tk_button_stu_search.bind('<Button-1>', self.search)
+        self.tk_tabs_content.tk_tabs_content_1.tk_button_stu_refresh.bind('<Button-1>', self.studentinfo_refresh)
+        self.tk_tabs_content.tk_tabs_content_1.tk_button_stu_search.bind('<Button-1>', self.studentinfo_search)
+        self.tk_tabs_content.tk_tabs_content_1.tk_button_studentinfo_export.bind('<Button-1>', self.studentinfo_export)

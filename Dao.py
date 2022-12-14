@@ -10,8 +10,8 @@ def getConnect():
         host='localhost',
         port=3306,
         user='root',
-        password='521027',
-        db='stu_sc_sys',
+        password='2055419072',
+        db='python',
         charset='utf8',
         cursorclass=pymysql.cursors.DictCursor
     )
@@ -71,8 +71,7 @@ def getAllUsers():
 
 def getAllStudents():
     connection, cursor = getConnect()
-    sql = 'select row_number() over () as id, uid, uname, ugender, uidentify, uclid, uemail, upwd, urole ' \
-          'from user where urole = 1'
+    sql = 'select row_number() over () as id, uid, uname, ugender, uidentify, uclid, uemail from user where urole = 1'
     cursor.execute(sql)
     res = {
         "code": 0,
