@@ -17,8 +17,8 @@ class WinGUI(Tk):
     def __win(self):
         self.title("Tkinter布局助手")
         # 设置窗口大小、居中
-        width = 292
-        height = 85
+        width = 400
+        height = 150
         screenwidth = self.winfo_screenwidth()
         screenheight = self.winfo_screenheight()
         geometry = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
@@ -27,22 +27,22 @@ class WinGUI(Tk):
 
     def __tk_label_lbn30yj2(self):
         label = Label(self, text="请输入学号：", anchor="center")
-        label.place(x=30, y=10, width=69, height=24)
+        label.place(x=30, y=20, width=150, height=30)
         return label
 
     def __tk_input_studentid(self):
         ipt = Entry(self)
-        ipt.place(x=100, y=10, width=150, height=24)
+        ipt.place(x=210, y=20, width=150, height=30)
         return ipt
 
     def __tk_button_delete(self):
         btn = Button(self, text="删除")
-        btn.place(x=60, y=50, width=50, height=24)
+        btn.place(x=100, y=80, width=50, height=30)
         return btn
 
     def __tk_button_reset(self):
         btn = Button(self, text="取消")
-        btn.place(x=160, y=50, width=50, height=24)
+        btn.place(x=200, y=80, width=50, height=30)
         return btn
 
 

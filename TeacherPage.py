@@ -211,8 +211,9 @@ class Frame_content_1(Frame):
 
     def __tk_select_box_stu_gender(self):
         cb = Combobox(self, state="readonly")
-        cb['values'] = ("全部", "男", "女")
+        cb['values'] = ("请选择性别", "男", "女")
         cb.place(x=540, y=10, width=150, height=30)
+        cb.current(0)
         return cb
 
     def __tk_button_stu_search(self):
@@ -450,8 +451,8 @@ class Win(WinGUI):
             self.updateStudent.destroy()
             self.addInfo.destroy()
             self.delete.destroy()
-        except:
-            print("")
+        except Exception as e:
+            print(e)
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
 
@@ -579,7 +580,7 @@ class Win(WinGUI):
         value = self.tk_tabs_content.tk_tabs_content_1.tk_input_stu_name.get()
         num = self.tk_tabs_content.tk_tabs_content_1.tk_select_box_stu_gender.get()
         print(num, value)
-        if num == '全部':
+        if num == '请选择性别':
             result = Dao.searchStudents(value, '')
         else:
             result = Dao.searchStudents(value, num)
