@@ -129,8 +129,8 @@ class Win(WinGUI):
         __course_exam_method = self.tk_select_box_course_exam_method.get()
         if not __course_name:
             messagebox.showerror("错误", "课程名称为空！")
-        elif not re.findall(r'^[0-8]\.[0,5]$', __course_credit):
-            messagebox.showerror("错误", "学分格式不合法！")
+        elif not re.findall(r'^(0\.5)|(8\.0)|[1-7](\.[0,5])?$', __course_credit):
+            messagebox.showerror("错误", "学分格式不合法(0.5-8.0)！")
         else:
             res = Dao.addCourse(__course_name, __course_nature, __course_credit, __course_department, __course_exam_method)
             if res.get("code") == 0:

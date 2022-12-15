@@ -1,17 +1,24 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import *
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pylab import mpl
+
+from matplotlib.backends._backend_tk import NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 import Dao
 import Login
+import analysis
+import test
 
+global current_uid
 
 class WinGUI(Tk):
     def __init__(self):
         super().__init__()
         self.__win()
-        self.tk_label_title = self.__tk_label_title()
-        self.tk_label_current_user = self.__tk_label_current_user()
         self.tk_label_title = self.__tk_label_title()
         self.tk_label_current_user = self.__tk_label_current_user()
         self.tk_tabs_content = Frame_content(self)
@@ -163,6 +170,7 @@ class Frame_content_1(Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.__frame()
+        self.tk_button_analysis = self.__tk_button_analysis()
         self.tk_table_stu_score = self.__tk_table_stu_score()
         self.tk_select_box_course_nature = self.__tk_select_box_course_nature()
         self.tk_select_box_course_department = self.__tk_select_box_course_department()
@@ -194,6 +202,11 @@ class Frame_content_1(Frame):
 
         tk_table.place(x=0, y=55, width=1000, height=420)
         return tk_table
+
+    def __tk_button_analysis(self):
+        btn = Button(self, text="分析")
+        btn.place(x=65, y=10, width=75, height=30)
+        return btn
 
     def __tk_select_box_course_nature(self):
         cb = Combobox(self, state="readonly")
@@ -289,10 +302,11 @@ class Win(WinGUI):
         super().__init__()
         self.__event_bind()
         self.uid = current_user.get("uid")
+        self.uclid = current_user.get("uclid")
         self.tk_label_current_user['text'] = "当前用户：" + current_user.get("uname")
         self.tk_tabs_content.tk_tabs_content_0.student_number.set(current_user.get("uid"))
         self.tk_tabs_content.tk_tabs_content_0.student_name.set(current_user.get("uname"))
-        self.tk_tabs_content.tk_tabs_content_0.tk_tk_select_stu_gender.current(0 if current_user.get("ugender") else 1)
+        self.tk_tabs_content.tk_tabs_content_0.tk_tk_select_stu_gender.current(0 if current_user.get("ugender") == '男' else 1)
         self.tk_tabs_content.tk_tabs_content_0.student_identify.set(current_user.get("uidentify"))
         self.tk_tabs_content.tk_tabs_content_0.student_email.set(current_user.get("uemail"))
 
@@ -301,10 +315,21 @@ class Win(WinGUI):
         self.destroy()
 
     def updateStudentInfo(self, evt):
-        self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_name.get()
-        self.tk_tabs_content.tk_tabs_content_0.tk_tk_select_stu_gender.get()
-        self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_identity.get()
-        self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_email.get()
+        __stu_name = self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_name.get()
+        __stu_gender = self.tk_tabs_content.tk_tabs_content_0.tk_tk_select_stu_gender.get()
+        __stu_identify = self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_identity.get()
+        __stu_email = self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_email.get()
+        if not __stu_name or not __stu_gender or not __stu_identify or not __stu_email:
+            messagebox.showinfo("提示", "必填项不能为空！")
+            return
+        if not re.match(r'^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$', __stu_identify):
+            messagebox.showinfo("提示", "身份证格式不合法！")
+            return
+        if not re.match(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$', __stu_email):
+            messagebox.showinfo("提示", "电子邮箱格式不合法！")
+            return
+        res = Dao.updateUser(self.uid, __stu_name, __stu_gender, __stu_identify, self.uclid, __stu_email)
+        messagebox.showinfo("提示", res.get("msg"))
         print("更新学生信息", evt)
 
     def stu_reset(self, evt):
@@ -313,6 +338,15 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_0.tk_tk_select_stu_gender.current(0 if self.userInfo[2] else 1)
         self.tk_tabs_content.tk_tabs_content_0.student_identify.set(self.userInfo[3])
         self.tk_tabs_content.tk_tabs_content_0.student_email.set(self.userInfo[5])
+
+    def analysisStudentScore(self, evt):
+        res_score = Dao.getScoreByUid(self.uid).get("data")
+        data = {
+            "x": [i.get("cname") for i in res_score],
+            "y": [float(i.get("score")) for i in res_score]
+        }
+        test.createAnalysisWindow(data)
+        print("成绩分析图表绘制")
 
     def searchStudentScore(self, evt):
         print("<Button-1>事件未处理", evt)
@@ -351,6 +385,7 @@ class Win(WinGUI):
         self.protocol('WM_DELETE_WINDOW', self.logout)
         self.tk_tabs_content.tk_tabs_content_0.tk_button_stu_update.bind('<Button-1>', self.updateStudentInfo)
         self.tk_tabs_content.tk_tabs_content_0.tk_button_stu_reset.bind('<Button-1>', self.stu_reset)
+        self.tk_tabs_content.tk_tabs_content_1.tk_button_analysis.bind('<Button-1>', self.analysisStudentScore)
         self.tk_tabs_content.tk_tabs_content_1.tk_button_search.bind('<Button-1>', self.searchStudentScore)
         self.tk_tabs_content.tk_tabs_content_1.tk_button_export.bind('<Button-1>', self.exportStudentScore)
         self.tk_tabs_content.tk_tabs_content_3.tk_button_update_stu_password.bind('<Button-1>',

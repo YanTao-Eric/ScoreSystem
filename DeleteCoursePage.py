@@ -61,7 +61,7 @@ class Win(WinGUI):
             messagebox.showwarning("提示", Dao.deleteCourse(self.tk_input_stu_number.get()).get("msg"))
             self.destroy()
         else:
-            messagebox.showwarning("提示", "学号不存在！")
+            messagebox.showwarning("提示", "课程号不存在！")
 
     def cancelCourse(self, evt):
         self.destroy()

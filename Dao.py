@@ -71,11 +71,21 @@ def updatePassword(uid, origin_pwd, new_pwd):
 
 
 def getScoreByUid(uid):
+    """
+    通过学号获取成绩
+    :param uid:
+    :return:
+    """
     conn, cursor = getConnect()
-    sql = f"select ROW_NUMBER() over () as id, uc.cname, c.ccredit, c.cnature, c.cdepartment, c.cexammethod, score " \
-          f"from user_course uc inner join course c on uc.cname = c.cname where uc.uid = '{uid}'"
+    sql = f"select ROW_NUMBER() over () as id, uc.uid, uc.cname, score, u.uname, c.cnature from user_course uc " \
+          f"inner join user u on uc.uid = u.uid inner join course c on uc.cname = c.cname where u.uid = '{uid}'"
+    print(sql)
     cursor.execute(sql)
-    res = cursor.fetchall()
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
     cursor.close()
     conn.close()
     return res
@@ -202,8 +212,9 @@ def updateUser(uid, uname, ugender, uidentify, uclid, uemail):
     :return:
     """
     connection, cursor = getConnect()
-    sql = f"update user set uname = '{uid}', ugender = '{uname}', uidentify = '{uidentify}', uclid = '{ugender}'" \
+    sql = f"update user set uname = '{uname}', ugender = '{ugender}', uidentify = '{uidentify}', uclid = '{uclid}'" \
           f", uemail ='{uemail}' where uid = '{uid}'"
+    print(sql)
     res = {
         "code": 0,
         "msg": "修改成功！"
