@@ -430,3 +430,86 @@ def updateCourseInfo(cid, cname, nature, credit, department, exammethod):
     cursor.close()
     connection.close()
     return res
+
+
+def getScoreBandByCName(course_name):
+    """
+    获取课程名为course_name的各个分段的学生人数
+    :param course_name:
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select SUM(IF(score <= 100 and score >= 90, 1, 0)) as A, SUM(IF(score < 90 and score >= 80, 1, 0)) as B, " \
+          f"SUM(IF(score < 80 and score >= 70, 1, 0)) as C, SUM(IF(score < 70 and score >= 60, 1, 0)) as D, " \
+          f"SUM(IF(score < 60, 1, 0)) as E from user_course where cname = '{course_name}'"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def getMaxAndMinAndAvgScoreByCLid(class_id):
+    """
+    获取班级号为class_id的班级的各科最高分、最低分以及平均分
+    :param class_id:
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select uc.cname, MAX(score) as max_score, MIN(score) as min_score, AVG(score) as avg_score " \
+          f"from user_course uc inner join user u on uc.uid = u.uid where u.uclid = '{class_id}' group by uc.cname"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def getOverallGradeLevelByCLid(class_id):
+    """
+    获取班级号为class_id的班级综合成绩等级各分段人数
+    :param class_id:
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select SUM(IF(avg_score >= 85 and avg_score <= 100, 1, 0)) as A, " \
+          f"SUM(IF(avg_score >= 70 and avg_score < 85, 1, 0)) as B, " \
+          f"SUM(IF(avg_score >= 60 and avg_score < 70, 1, 0)) as C, " \
+          f"SUM(IF(avg_score < 60, 1, 0)) as D from (" \
+          f"select AVG(score) as avg_score from user_course uc " \
+          f"inner join user u on uc.uid = u.uid where u.uclid = '{class_id}' group by u.uid" \
+          f") s"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+def getAllClasses():
+    """
+    获取用户表中已存在的班级号
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select distinct uclid from user where urole = 1"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
