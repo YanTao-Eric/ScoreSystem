@@ -496,3 +496,21 @@ def getOverallGradeLevelByCLid(class_id):
     cursor.close()
     connection.close()
     return res
+
+
+def getAllClasses():
+    """
+    获取用户表中已存在的班级号
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select distinct uclid from user where urole = 1"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
