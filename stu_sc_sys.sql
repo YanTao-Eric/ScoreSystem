@@ -11,7 +11,7 @@
  Target Server Version : 80022
  File Encoding         : 65001
 
- Date: 14/12/2022 10:44:52
+ Date: 16/12/2022 11:35:59
 */
 
 SET NAMES utf8mb4;
@@ -27,7 +27,7 @@ CREATE TABLE `classes`  (
   `clmid` int NOT NULL COMMENT '专业',
   `clno` int NOT NULL COMMENT '班级序号',
   PRIMARY KEY (`clid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of classes
@@ -55,7 +55,7 @@ CREATE TABLE `course`  (
   `cdepartment` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '开课学院',
   `cexammethod` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '考试方式',
   PRIMARY KEY (`cid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of course
@@ -81,7 +81,7 @@ CREATE TABLE `department`  (
   `did` int NOT NULL AUTO_INCREMENT COMMENT '学院id',
   `dname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '学院名称',
   PRIMARY KEY (`did`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of department
@@ -113,7 +113,7 @@ CREATE TABLE `dictionary`  (
   `ddtkey` int NOT NULL COMMENT '该分类的主键',
   `ddtvalue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '该键的值',
   PRIMARY KEY (`ddid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of dictionary
@@ -176,21 +176,43 @@ CREATE TABLE `user`  (
   `uname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '姓名',
   `ugender` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '男' COMMENT '性别',
   `uidentify` varchar(18) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '身份证号',
-  `uclid` int NOT NULL COMMENT '班级',
+  `uclid` int NULL DEFAULT NULL COMMENT '班级',
   `uemail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '手机号',
   `upwd` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '密码',
   `urole` int NOT NULL DEFAULT 1 COMMENT '用户的角色',
   PRIMARY KEY (`uid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 220004 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (200001, 'Alice', '女', '513721200111111234', 9, 'alice123@foxmail.com', '123456', 1);
-INSERT INTO `user` VALUES (200002, 'Jobs', '男', NULL, 1, NULL, '123456', 1);
+INSERT INTO `user` VALUES (200001, 'Amy', '女', '511921200206102159', 9, 'amy123@foxmail.com', 'amy123456', 1);
+INSERT INTO `user` VALUES (200002, 'Jobs', '男', '511920199808301459', 1, 'jobs@apple.com', '123456', 1);
 INSERT INTO `user` VALUES (220001, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
-INSERT INTO `user` VALUES (220002, 'Steve', '男', '123456789012345678', 9, '471404371@qq.com', '123456', 0);
+INSERT INTO `user` VALUES (220002, 'Steve', '男', '513721200110272736', 0, '471404371@qq.com', '123456', 0);
 INSERT INTO `user` VALUES (220003, 'qw', '男', '123456789', 9, '123456@qw', '123456', 1);
+INSERT INTO `user` VALUES (220004, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220005, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220006, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220007, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220008, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220009, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220010, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220011, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220012, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220013, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220014, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220015, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220016, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220017, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220018, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220019, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220020, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220021, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220022, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220023, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220024, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
+INSERT INTO `user` VALUES (220025, 'Eric', '男', '513721200110272736', 9, '2810950897@qq.com', '123456', 1);
 
 -- ----------------------------
 -- Table structure for user_course
@@ -202,30 +224,330 @@ CREATE TABLE `user_course`  (
   `cname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '课程名',
   `score` decimal(6, 2) NULL DEFAULT NULL COMMENT '成绩',
   PRIMARY KEY (`ucid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_course
 -- ----------------------------
-INSERT INTO `user_course` VALUES (1, 200001, '大数据程序设计(Python)', NULL);
-INSERT INTO `user_course` VALUES (2, 200001, '数据结构与算法', NULL);
-INSERT INTO `user_course` VALUES (3, 200001, '软件工程', NULL);
-INSERT INTO `user_course` VALUES (4, 200001, '计算机网络原理', NULL);
-INSERT INTO `user_course` VALUES (5, 200001, '程序设计基础(网)', NULL);
-INSERT INTO `user_course` VALUES (6, 200001, 'Linux编程及应用', NULL);
-INSERT INTO `user_course` VALUES (7, 200001, 'WEB前端开发', NULL);
-INSERT INTO `user_course` VALUES (8, 200001, '机械趣味模型', NULL);
-INSERT INTO `user_course` VALUES (9, 200001, '应用微生物学', NULL);
-INSERT INTO `user_course` VALUES (10, 200001, '创新性思维与方法', NULL);
-INSERT INTO `user_course` VALUES (11, 200002, '大数据程序设计(Python)', NULL);
-INSERT INTO `user_course` VALUES (12, 200002, '数据结构与算法', NULL);
-INSERT INTO `user_course` VALUES (13, 200002, '软件工程', NULL);
-INSERT INTO `user_course` VALUES (14, 200002, '计算机网络原理', NULL);
-INSERT INTO `user_course` VALUES (15, 200002, '程序设计基础(网)', NULL);
-INSERT INTO `user_course` VALUES (16, 200002, 'Linux编程及应用', NULL);
-INSERT INTO `user_course` VALUES (17, 200002, 'WEB前端开发', NULL);
-INSERT INTO `user_course` VALUES (18, 200002, '机械趣味模型', NULL);
-INSERT INTO `user_course` VALUES (19, 200002, '应用微生物学', NULL);
-INSERT INTO `user_course` VALUES (20, 200002, '创新性思维与方法', NULL);
+INSERT INTO `user_course` VALUES (1, 200001, '大数据程序设计(Python)', 91.00);
+INSERT INTO `user_course` VALUES (2, 200001, '数据结构与算法', 82.00);
+INSERT INTO `user_course` VALUES (3, 200001, '软件工程', 73.50);
+INSERT INTO `user_course` VALUES (4, 200001, '计算机网络原理', 88.00);
+INSERT INTO `user_course` VALUES (5, 200001, '程序设计基础(网)', 62.00);
+INSERT INTO `user_course` VALUES (6, 200001, 'Linux编程及应用', 87.00);
+INSERT INTO `user_course` VALUES (7, 200001, 'WEB前端开发', 76.00);
+INSERT INTO `user_course` VALUES (8, 200001, '机械趣味模型', 81.00);
+INSERT INTO `user_course` VALUES (9, 200001, '应用微生物学', 38.00);
+INSERT INTO `user_course` VALUES (10, 200001, '创新性思维与方法', 86.00);
+INSERT INTO `user_course` VALUES (11, 200002, '大数据程序设计(Python)', 91.00);
+INSERT INTO `user_course` VALUES (12, 200002, '数据结构与算法', 66.00);
+INSERT INTO `user_course` VALUES (13, 200002, '软件工程', 77.00);
+INSERT INTO `user_course` VALUES (14, 200002, '计算机网络原理', 86.00);
+INSERT INTO `user_course` VALUES (15, 200002, '程序设计基础(网)', 85.50);
+INSERT INTO `user_course` VALUES (16, 200002, 'Linux编程及应用', 81.50);
+INSERT INTO `user_course` VALUES (17, 200002, 'WEB前端开发', 80.00);
+INSERT INTO `user_course` VALUES (18, 200002, '机械趣味模型', 71.00);
+INSERT INTO `user_course` VALUES (19, 200002, '应用微生物学', 68.50);
+INSERT INTO `user_course` VALUES (20, 200002, '创新性思维与方法', 73.00);
+INSERT INTO `user_course` VALUES (21, 220003, '大数据程序设计(Python)', 95.00);
+INSERT INTO `user_course` VALUES (22, 220003, '数据结构与算法', 91.00);
+INSERT INTO `user_course` VALUES (23, 220003, '软件工程', 99.00);
+INSERT INTO `user_course` VALUES (24, 220003, '计算机网络原理', 70.00);
+INSERT INTO `user_course` VALUES (25, 220003, '程序设计基础(网)', 62.00);
+INSERT INTO `user_course` VALUES (26, 220003, 'Linux编程及应用', 52.00);
+INSERT INTO `user_course` VALUES (27, 220003, 'WEB前端开发', 63.00);
+INSERT INTO `user_course` VALUES (28, 220003, '机械趣味模型', 87.00);
+INSERT INTO `user_course` VALUES (29, 220003, '应用微生物学', 72.00);
+INSERT INTO `user_course` VALUES (30, 220003, '创新性思维与方法', 79.00);
+INSERT INTO `user_course` VALUES (31, 220003, 'Java课程设计', 57.00);
+INSERT INTO `user_course` VALUES (32, 220003, 'JavaEE企业开发', 53.00);
+INSERT INTO `user_course` VALUES (33, 220004, '大数据程序设计(Python)', 97.00);
+INSERT INTO `user_course` VALUES (34, 220004, '数据结构与算法', 96.00);
+INSERT INTO `user_course` VALUES (35, 220004, '软件工程', 88.00);
+INSERT INTO `user_course` VALUES (36, 220004, '计算机网络原理', 93.00);
+INSERT INTO `user_course` VALUES (37, 220004, '程序设计基础(网)', 56.00);
+INSERT INTO `user_course` VALUES (38, 220004, 'Linux编程及应用', 89.00);
+INSERT INTO `user_course` VALUES (39, 220004, 'WEB前端开发', 97.00);
+INSERT INTO `user_course` VALUES (40, 220004, '机械趣味模型', 96.00);
+INSERT INTO `user_course` VALUES (41, 220004, '应用微生物学', 97.50);
+INSERT INTO `user_course` VALUES (42, 220004, '创新性思维与方法', 94.00);
+INSERT INTO `user_course` VALUES (43, 220004, 'Java课程设计', 92.00);
+INSERT INTO `user_course` VALUES (44, 220004, 'JavaEE企业开发', 94.00);
+INSERT INTO `user_course` VALUES (45, 220005, '大数据程序设计(Python)', 95.00);
+INSERT INTO `user_course` VALUES (46, 220005, '数据结构与算法', 63.00);
+INSERT INTO `user_course` VALUES (47, 220005, '软件工程', 70.00);
+INSERT INTO `user_course` VALUES (48, 220005, '计算机网络原理', 92.00);
+INSERT INTO `user_course` VALUES (49, 220005, '程序设计基础(网)', 65.00);
+INSERT INTO `user_course` VALUES (50, 220005, 'Linux编程及应用', 100.00);
+INSERT INTO `user_course` VALUES (51, 220005, 'WEB前端开发', 53.00);
+INSERT INTO `user_course` VALUES (52, 220005, '机械趣味模型', 53.00);
+INSERT INTO `user_course` VALUES (53, 220005, '应用微生物学', 84.00);
+INSERT INTO `user_course` VALUES (54, 220005, '创新性思维与方法', 69.00);
+INSERT INTO `user_course` VALUES (55, 220005, 'Java课程设计', 98.00);
+INSERT INTO `user_course` VALUES (56, 220005, 'JavaEE企业开发', 67.00);
+INSERT INTO `user_course` VALUES (57, 220006, '大数据程序设计(Python)', 91.00);
+INSERT INTO `user_course` VALUES (58, 220006, '数据结构与算法', 51.00);
+INSERT INTO `user_course` VALUES (59, 220006, '软件工程', 58.00);
+INSERT INTO `user_course` VALUES (60, 220006, '计算机网络原理', 54.00);
+INSERT INTO `user_course` VALUES (61, 220006, '程序设计基础(网)', 57.00);
+INSERT INTO `user_course` VALUES (62, 220006, 'Linux编程及应用', 77.00);
+INSERT INTO `user_course` VALUES (63, 220006, 'WEB前端开发', 87.00);
+INSERT INTO `user_course` VALUES (64, 220006, '机械趣味模型', 92.00);
+INSERT INTO `user_course` VALUES (65, 220006, '应用微生物学', 68.00);
+INSERT INTO `user_course` VALUES (66, 220006, '创新性思维与方法', 83.00);
+INSERT INTO `user_course` VALUES (67, 220006, 'Java课程设计', 92.00);
+INSERT INTO `user_course` VALUES (68, 220006, 'JavaEE企业开发', 67.00);
+INSERT INTO `user_course` VALUES (69, 220007, '大数据程序设计(Python)', 75.00);
+INSERT INTO `user_course` VALUES (70, 220007, '数据结构与算法', 91.00);
+INSERT INTO `user_course` VALUES (71, 220007, '软件工程', 57.00);
+INSERT INTO `user_course` VALUES (72, 220007, '计算机网络原理', 77.00);
+INSERT INTO `user_course` VALUES (73, 220007, '程序设计基础(网)', 100.00);
+INSERT INTO `user_course` VALUES (74, 220007, 'Linux编程及应用', 98.00);
+INSERT INTO `user_course` VALUES (75, 220007, 'WEB前端开发', 95.00);
+INSERT INTO `user_course` VALUES (76, 220007, '机械趣味模型', 94.00);
+INSERT INTO `user_course` VALUES (77, 220007, '应用微生物学', 90.00);
+INSERT INTO `user_course` VALUES (78, 220007, '创新性思维与方法', 78.00);
+INSERT INTO `user_course` VALUES (79, 220007, 'Java课程设计', 88.00);
+INSERT INTO `user_course` VALUES (80, 220007, 'JavaEE企业开发', 67.00);
+INSERT INTO `user_course` VALUES (81, 220008, '大数据程序设计(Python)', 64.00);
+INSERT INTO `user_course` VALUES (82, 220008, '数据结构与算法', 94.00);
+INSERT INTO `user_course` VALUES (83, 220008, '软件工程', 88.00);
+INSERT INTO `user_course` VALUES (84, 220008, '计算机网络原理', 55.00);
+INSERT INTO `user_course` VALUES (85, 220008, '程序设计基础(网)', 93.00);
+INSERT INTO `user_course` VALUES (86, 220008, 'Linux编程及应用', 96.00);
+INSERT INTO `user_course` VALUES (87, 220008, 'WEB前端开发', 97.00);
+INSERT INTO `user_course` VALUES (88, 220008, '机械趣味模型', 62.00);
+INSERT INTO `user_course` VALUES (89, 220008, '应用微生物学', 65.00);
+INSERT INTO `user_course` VALUES (90, 220008, '创新性思维与方法', 78.00);
+INSERT INTO `user_course` VALUES (91, 220008, 'Java课程设计', 52.00);
+INSERT INTO `user_course` VALUES (92, 220008, 'JavaEE企业开发', 91.00);
+INSERT INTO `user_course` VALUES (93, 220009, '大数据程序设计(Python)', 61.00);
+INSERT INTO `user_course` VALUES (94, 220009, '数据结构与算法', 99.00);
+INSERT INTO `user_course` VALUES (95, 220009, '软件工程', 94.00);
+INSERT INTO `user_course` VALUES (96, 220009, '计算机网络原理', 69.00);
+INSERT INTO `user_course` VALUES (97, 220009, '程序设计基础(网)', 69.00);
+INSERT INTO `user_course` VALUES (98, 220009, 'Linux编程及应用', 92.00);
+INSERT INTO `user_course` VALUES (99, 220009, 'WEB前端开发', 74.00);
+INSERT INTO `user_course` VALUES (100, 220009, '机械趣味模型', 74.00);
+INSERT INTO `user_course` VALUES (101, 220009, '应用微生物学', 97.00);
+INSERT INTO `user_course` VALUES (102, 220009, '创新性思维与方法', 72.00);
+INSERT INTO `user_course` VALUES (103, 220009, 'Java课程设计', 90.00);
+INSERT INTO `user_course` VALUES (104, 220009, 'JavaEE企业开发', 96.00);
+INSERT INTO `user_course` VALUES (105, 220010, '大数据程序设计(Python)', 84.00);
+INSERT INTO `user_course` VALUES (106, 220010, '数据结构与算法', 79.00);
+INSERT INTO `user_course` VALUES (107, 220010, '软件工程', 81.00);
+INSERT INTO `user_course` VALUES (108, 220010, '计算机网络原理', 69.00);
+INSERT INTO `user_course` VALUES (109, 220010, '程序设计基础(网)', 77.00);
+INSERT INTO `user_course` VALUES (110, 220010, 'Linux编程及应用', 57.00);
+INSERT INTO `user_course` VALUES (111, 220010, 'WEB前端开发', 51.00);
+INSERT INTO `user_course` VALUES (112, 220010, '机械趣味模型', 99.00);
+INSERT INTO `user_course` VALUES (113, 220010, '应用微生物学', 67.00);
+INSERT INTO `user_course` VALUES (114, 220010, '创新性思维与方法', 86.00);
+INSERT INTO `user_course` VALUES (115, 220010, 'Java课程设计', 62.00);
+INSERT INTO `user_course` VALUES (116, 220010, 'JavaEE企业开发', 70.00);
+INSERT INTO `user_course` VALUES (117, 220011, '大数据程序设计(Python)', 80.00);
+INSERT INTO `user_course` VALUES (118, 220011, '数据结构与算法', 64.00);
+INSERT INTO `user_course` VALUES (119, 220011, '软件工程', 92.00);
+INSERT INTO `user_course` VALUES (120, 220011, '计算机网络原理', 86.00);
+INSERT INTO `user_course` VALUES (121, 220011, '程序设计基础(网)', 95.00);
+INSERT INTO `user_course` VALUES (122, 220011, 'Linux编程及应用', 76.00);
+INSERT INTO `user_course` VALUES (123, 220011, 'WEB前端开发', 57.00);
+INSERT INTO `user_course` VALUES (124, 220011, '机械趣味模型', 69.00);
+INSERT INTO `user_course` VALUES (125, 220011, '应用微生物学', 79.00);
+INSERT INTO `user_course` VALUES (126, 220011, '创新性思维与方法', 52.00);
+INSERT INTO `user_course` VALUES (127, 220011, 'Java课程设计', 71.00);
+INSERT INTO `user_course` VALUES (128, 220011, 'JavaEE企业开发', 78.00);
+INSERT INTO `user_course` VALUES (129, 220012, '大数据程序设计(Python)', 92.00);
+INSERT INTO `user_course` VALUES (130, 220012, '数据结构与算法', 81.00);
+INSERT INTO `user_course` VALUES (131, 220012, '软件工程', 84.00);
+INSERT INTO `user_course` VALUES (132, 220012, '计算机网络原理', 93.00);
+INSERT INTO `user_course` VALUES (133, 220012, '程序设计基础(网)', 58.00);
+INSERT INTO `user_course` VALUES (134, 220012, 'Linux编程及应用', 97.00);
+INSERT INTO `user_course` VALUES (135, 220012, 'WEB前端开发', 76.00);
+INSERT INTO `user_course` VALUES (136, 220012, '机械趣味模型', 98.00);
+INSERT INTO `user_course` VALUES (137, 220012, '应用微生物学', 80.00);
+INSERT INTO `user_course` VALUES (138, 220012, '创新性思维与方法', 75.00);
+INSERT INTO `user_course` VALUES (139, 220012, 'Java课程设计', 66.00);
+INSERT INTO `user_course` VALUES (140, 220012, 'JavaEE企业开发', 60.00);
+INSERT INTO `user_course` VALUES (141, 220013, '大数据程序设计(Python)', 53.00);
+INSERT INTO `user_course` VALUES (142, 220013, '数据结构与算法', 77.00);
+INSERT INTO `user_course` VALUES (143, 220013, '软件工程', 83.00);
+INSERT INTO `user_course` VALUES (144, 220013, '计算机网络原理', 52.00);
+INSERT INTO `user_course` VALUES (145, 220013, '程序设计基础(网)', 97.00);
+INSERT INTO `user_course` VALUES (146, 220013, 'Linux编程及应用', 86.00);
+INSERT INTO `user_course` VALUES (147, 220013, 'WEB前端开发', 63.00);
+INSERT INTO `user_course` VALUES (148, 220013, '机械趣味模型', 87.00);
+INSERT INTO `user_course` VALUES (149, 220013, '应用微生物学', 100.00);
+INSERT INTO `user_course` VALUES (150, 220013, '创新性思维与方法', 88.00);
+INSERT INTO `user_course` VALUES (151, 220013, 'Java课程设计', 65.00);
+INSERT INTO `user_course` VALUES (152, 220013, 'JavaEE企业开发', 87.00);
+INSERT INTO `user_course` VALUES (153, 220014, '大数据程序设计(Python)', 74.00);
+INSERT INTO `user_course` VALUES (154, 220014, '数据结构与算法', 60.00);
+INSERT INTO `user_course` VALUES (155, 220014, '软件工程', 58.00);
+INSERT INTO `user_course` VALUES (156, 220014, '计算机网络原理', 64.00);
+INSERT INTO `user_course` VALUES (157, 220014, '程序设计基础(网)', 91.00);
+INSERT INTO `user_course` VALUES (158, 220014, 'Linux编程及应用', 84.00);
+INSERT INTO `user_course` VALUES (159, 220014, 'WEB前端开发', 68.00);
+INSERT INTO `user_course` VALUES (160, 220014, '机械趣味模型', 56.00);
+INSERT INTO `user_course` VALUES (161, 220014, '应用微生物学', 89.00);
+INSERT INTO `user_course` VALUES (162, 220014, '创新性思维与方法', 71.00);
+INSERT INTO `user_course` VALUES (163, 220014, 'Java课程设计', 50.00);
+INSERT INTO `user_course` VALUES (164, 220014, 'JavaEE企业开发', 51.00);
+INSERT INTO `user_course` VALUES (165, 220015, '大数据程序设计(Python)', 90.00);
+INSERT INTO `user_course` VALUES (166, 220015, '数据结构与算法', 72.00);
+INSERT INTO `user_course` VALUES (167, 220015, '软件工程', 52.00);
+INSERT INTO `user_course` VALUES (168, 220015, '计算机网络原理', 72.00);
+INSERT INTO `user_course` VALUES (169, 220015, '程序设计基础(网)', 66.00);
+INSERT INTO `user_course` VALUES (170, 220015, 'Linux编程及应用', 66.00);
+INSERT INTO `user_course` VALUES (171, 220015, 'WEB前端开发', 75.00);
+INSERT INTO `user_course` VALUES (172, 220015, '机械趣味模型', 61.00);
+INSERT INTO `user_course` VALUES (173, 220015, '应用微生物学', 86.00);
+INSERT INTO `user_course` VALUES (174, 220015, '创新性思维与方法', 53.00);
+INSERT INTO `user_course` VALUES (175, 220015, 'Java课程设计', 82.00);
+INSERT INTO `user_course` VALUES (176, 220015, 'JavaEE企业开发', 79.00);
+INSERT INTO `user_course` VALUES (177, 220016, '大数据程序设计(Python)', 87.00);
+INSERT INTO `user_course` VALUES (178, 220016, '数据结构与算法', 88.00);
+INSERT INTO `user_course` VALUES (179, 220016, '软件工程', 51.00);
+INSERT INTO `user_course` VALUES (180, 220016, '计算机网络原理', 95.00);
+INSERT INTO `user_course` VALUES (181, 220016, '程序设计基础(网)', 100.00);
+INSERT INTO `user_course` VALUES (182, 220016, 'Linux编程及应用', 57.00);
+INSERT INTO `user_course` VALUES (183, 220016, 'WEB前端开发', 85.00);
+INSERT INTO `user_course` VALUES (184, 220016, '机械趣味模型', 100.00);
+INSERT INTO `user_course` VALUES (185, 220016, '应用微生物学', 93.00);
+INSERT INTO `user_course` VALUES (186, 220016, '创新性思维与方法', 50.00);
+INSERT INTO `user_course` VALUES (187, 220016, 'Java课程设计', 69.00);
+INSERT INTO `user_course` VALUES (188, 220016, 'JavaEE企业开发', 95.00);
+INSERT INTO `user_course` VALUES (189, 220017, '大数据程序设计(Python)', 52.00);
+INSERT INTO `user_course` VALUES (190, 220017, '数据结构与算法', 62.00);
+INSERT INTO `user_course` VALUES (191, 220017, '软件工程', 60.00);
+INSERT INTO `user_course` VALUES (192, 220017, '计算机网络原理', 85.00);
+INSERT INTO `user_course` VALUES (193, 220017, '程序设计基础(网)', 58.00);
+INSERT INTO `user_course` VALUES (194, 220017, 'Linux编程及应用', 90.00);
+INSERT INTO `user_course` VALUES (195, 220017, 'WEB前端开发', 93.00);
+INSERT INTO `user_course` VALUES (196, 220017, '机械趣味模型', 91.00);
+INSERT INTO `user_course` VALUES (197, 220017, '应用微生物学', 63.00);
+INSERT INTO `user_course` VALUES (198, 220017, '创新性思维与方法', 67.00);
+INSERT INTO `user_course` VALUES (199, 220017, 'Java课程设计', 73.00);
+INSERT INTO `user_course` VALUES (200, 220017, 'JavaEE企业开发', 73.00);
+INSERT INTO `user_course` VALUES (201, 220018, '大数据程序设计(Python)', 60.00);
+INSERT INTO `user_course` VALUES (202, 220018, '数据结构与算法', 65.00);
+INSERT INTO `user_course` VALUES (203, 220018, '软件工程', 60.00);
+INSERT INTO `user_course` VALUES (204, 220018, '计算机网络原理', 50.00);
+INSERT INTO `user_course` VALUES (205, 220018, '程序设计基础(网)', 52.00);
+INSERT INTO `user_course` VALUES (206, 220018, 'Linux编程及应用', 56.00);
+INSERT INTO `user_course` VALUES (207, 220018, 'WEB前端开发', 71.00);
+INSERT INTO `user_course` VALUES (208, 220018, '机械趣味模型', 61.00);
+INSERT INTO `user_course` VALUES (209, 220018, '应用微生物学', 79.00);
+INSERT INTO `user_course` VALUES (210, 220018, '创新性思维与方法', 67.00);
+INSERT INTO `user_course` VALUES (211, 220018, 'Java课程设计', 98.00);
+INSERT INTO `user_course` VALUES (212, 220018, 'JavaEE企业开发', 90.00);
+INSERT INTO `user_course` VALUES (213, 220019, '大数据程序设计(Python)', 72.00);
+INSERT INTO `user_course` VALUES (214, 220019, '数据结构与算法', 93.00);
+INSERT INTO `user_course` VALUES (215, 220019, '软件工程', 89.00);
+INSERT INTO `user_course` VALUES (216, 220019, '计算机网络原理', 97.00);
+INSERT INTO `user_course` VALUES (217, 220019, '程序设计基础(网)', 75.00);
+INSERT INTO `user_course` VALUES (218, 220019, 'Linux编程及应用', 60.00);
+INSERT INTO `user_course` VALUES (219, 220019, 'WEB前端开发', 95.00);
+INSERT INTO `user_course` VALUES (220, 220019, '机械趣味模型', 70.00);
+INSERT INTO `user_course` VALUES (221, 220019, '应用微生物学', 81.00);
+INSERT INTO `user_course` VALUES (222, 220019, '创新性思维与方法', 60.00);
+INSERT INTO `user_course` VALUES (223, 220019, 'Java课程设计', 85.00);
+INSERT INTO `user_course` VALUES (224, 220019, 'JavaEE企业开发', 52.00);
+INSERT INTO `user_course` VALUES (225, 220020, '大数据程序设计(Python)', 89.00);
+INSERT INTO `user_course` VALUES (226, 220020, '数据结构与算法', 58.00);
+INSERT INTO `user_course` VALUES (227, 220020, '软件工程', 91.00);
+INSERT INTO `user_course` VALUES (228, 220020, '计算机网络原理', 99.00);
+INSERT INTO `user_course` VALUES (229, 220020, '程序设计基础(网)', 62.00);
+INSERT INTO `user_course` VALUES (230, 220020, 'Linux编程及应用', 91.00);
+INSERT INTO `user_course` VALUES (231, 220020, 'WEB前端开发', 82.00);
+INSERT INTO `user_course` VALUES (232, 220020, '机械趣味模型', 97.00);
+INSERT INTO `user_course` VALUES (233, 220020, '应用微生物学', 56.00);
+INSERT INTO `user_course` VALUES (234, 220020, '创新性思维与方法', 81.00);
+INSERT INTO `user_course` VALUES (235, 220020, 'Java课程设计', 75.00);
+INSERT INTO `user_course` VALUES (236, 220020, 'JavaEE企业开发', 89.00);
+INSERT INTO `user_course` VALUES (237, 220021, '大数据程序设计(Python)', 80.00);
+INSERT INTO `user_course` VALUES (238, 220021, '数据结构与算法', 88.00);
+INSERT INTO `user_course` VALUES (239, 220021, '软件工程', 63.00);
+INSERT INTO `user_course` VALUES (240, 220021, '计算机网络原理', 68.00);
+INSERT INTO `user_course` VALUES (241, 220021, '程序设计基础(网)', 64.00);
+INSERT INTO `user_course` VALUES (242, 220021, 'Linux编程及应用', 64.00);
+INSERT INTO `user_course` VALUES (243, 220021, 'WEB前端开发', 98.00);
+INSERT INTO `user_course` VALUES (244, 220021, '机械趣味模型', 72.00);
+INSERT INTO `user_course` VALUES (245, 220021, '应用微生物学', 56.00);
+INSERT INTO `user_course` VALUES (246, 220021, '创新性思维与方法', 69.00);
+INSERT INTO `user_course` VALUES (247, 220021, 'Java课程设计', 63.00);
+INSERT INTO `user_course` VALUES (248, 220021, 'JavaEE企业开发', 96.00);
+INSERT INTO `user_course` VALUES (249, 220022, '大数据程序设计(Python)', 50.00);
+INSERT INTO `user_course` VALUES (250, 220022, '数据结构与算法', 70.00);
+INSERT INTO `user_course` VALUES (251, 220022, '软件工程', 77.00);
+INSERT INTO `user_course` VALUES (252, 220022, '计算机网络原理', 76.00);
+INSERT INTO `user_course` VALUES (253, 220022, '程序设计基础(网)', 92.00);
+INSERT INTO `user_course` VALUES (254, 220022, 'Linux编程及应用', 79.00);
+INSERT INTO `user_course` VALUES (255, 220022, 'WEB前端开发', 67.00);
+INSERT INTO `user_course` VALUES (256, 220022, '机械趣味模型', 68.00);
+INSERT INTO `user_course` VALUES (257, 220022, '应用微生物学', 70.00);
+INSERT INTO `user_course` VALUES (258, 220022, '创新性思维与方法', 67.00);
+INSERT INTO `user_course` VALUES (259, 220022, 'Java课程设计', 86.00);
+INSERT INTO `user_course` VALUES (260, 220022, 'JavaEE企业开发', 77.00);
+INSERT INTO `user_course` VALUES (261, 220023, '大数据程序设计(Python)', 77.00);
+INSERT INTO `user_course` VALUES (262, 220023, '数据结构与算法', 55.00);
+INSERT INTO `user_course` VALUES (263, 220023, '软件工程', 61.00);
+INSERT INTO `user_course` VALUES (264, 220023, '计算机网络原理', 52.00);
+INSERT INTO `user_course` VALUES (265, 220023, '程序设计基础(网)', 74.00);
+INSERT INTO `user_course` VALUES (266, 220023, 'Linux编程及应用', 80.00);
+INSERT INTO `user_course` VALUES (267, 220023, 'WEB前端开发', 71.00);
+INSERT INTO `user_course` VALUES (268, 220023, '机械趣味模型', 55.00);
+INSERT INTO `user_course` VALUES (269, 220023, '应用微生物学', 79.00);
+INSERT INTO `user_course` VALUES (270, 220023, '创新性思维与方法', 84.00);
+INSERT INTO `user_course` VALUES (271, 220023, 'Java课程设计', 56.00);
+INSERT INTO `user_course` VALUES (272, 220023, 'JavaEE企业开发', 57.00);
+INSERT INTO `user_course` VALUES (273, 220024, '大数据程序设计(Python)', 66.00);
+INSERT INTO `user_course` VALUES (274, 220024, '数据结构与算法', 76.00);
+INSERT INTO `user_course` VALUES (275, 220024, '软件工程', 90.00);
+INSERT INTO `user_course` VALUES (276, 220024, '计算机网络原理', 89.00);
+INSERT INTO `user_course` VALUES (277, 220024, '程序设计基础(网)', 51.00);
+INSERT INTO `user_course` VALUES (278, 220024, 'Linux编程及应用', 99.00);
+INSERT INTO `user_course` VALUES (279, 220024, 'WEB前端开发', 57.00);
+INSERT INTO `user_course` VALUES (280, 220024, '机械趣味模型', 73.00);
+INSERT INTO `user_course` VALUES (281, 220024, '应用微生物学', 84.00);
+INSERT INTO `user_course` VALUES (282, 220024, '创新性思维与方法', 53.00);
+INSERT INTO `user_course` VALUES (283, 220024, 'Java课程设计', 87.00);
+INSERT INTO `user_course` VALUES (284, 220024, 'JavaEE企业开发', 62.00);
+INSERT INTO `user_course` VALUES (285, 220025, '大数据程序设计(Python)', 86.00);
+INSERT INTO `user_course` VALUES (286, 220025, '数据结构与算法', 83.00);
+INSERT INTO `user_course` VALUES (287, 220025, '软件工程', 72.00);
+INSERT INTO `user_course` VALUES (288, 220025, '计算机网络原理', 87.00);
+INSERT INTO `user_course` VALUES (289, 220025, '程序设计基础(网)', 94.00);
+INSERT INTO `user_course` VALUES (290, 220025, 'Linux编程及应用', 82.00);
+INSERT INTO `user_course` VALUES (291, 220025, 'WEB前端开发', 62.00);
+INSERT INTO `user_course` VALUES (292, 220025, '机械趣味模型', 88.00);
+INSERT INTO `user_course` VALUES (293, 220025, '应用微生物学', 79.00);
+INSERT INTO `user_course` VALUES (294, 220025, '创新性思维与方法', 84.00);
+INSERT INTO `user_course` VALUES (295, 220025, 'Java课程设计', 99.00);
+INSERT INTO `user_course` VALUES (296, 220025, 'JavaEE企业开发', 96.00);
+INSERT INTO `user_course` VALUES (297, 220001, '大数据程序设计(Python)', 75.00);
+INSERT INTO `user_course` VALUES (298, 220001, '数据结构与算法', 99.00);
+INSERT INTO `user_course` VALUES (299, 220001, '软件工程', 71.00);
+INSERT INTO `user_course` VALUES (300, 220001, '计算机网络原理', 59.00);
+INSERT INTO `user_course` VALUES (301, 220001, '程序设计基础(网)', 61.00);
+INSERT INTO `user_course` VALUES (302, 220001, 'Linux编程及应用', 79.00);
+INSERT INTO `user_course` VALUES (303, 220001, 'WEB前端开发', 61.00);
+INSERT INTO `user_course` VALUES (304, 220001, '机械趣味模型', 52.00);
+INSERT INTO `user_course` VALUES (305, 220001, '应用微生物学', 54.00);
+INSERT INTO `user_course` VALUES (306, 220001, '创新性思维与方法', 91.00);
+INSERT INTO `user_course` VALUES (307, 220001, 'Java课程设计', 86.00);
+INSERT INTO `user_course` VALUES (308, 220001, 'JavaEE企业开发', 57.00);
+INSERT INTO `user_course` VALUES (309, 220002, '大数据程序设计(Python)', 90.00);
+INSERT INTO `user_course` VALUES (310, 220002, '数据结构与算法', 81.00);
+INSERT INTO `user_course` VALUES (311, 220002, '软件工程', 75.00);
+INSERT INTO `user_course` VALUES (312, 220002, '计算机网络原理', 89.00);
+INSERT INTO `user_course` VALUES (313, 220002, '程序设计基础(网)', 58.00);
+INSERT INTO `user_course` VALUES (314, 220002, 'Linux编程及应用', 94.00);
+INSERT INTO `user_course` VALUES (315, 220002, 'WEB前端开发', 90.00);
+INSERT INTO `user_course` VALUES (316, 220002, '机械趣味模型', 75.00);
+INSERT INTO `user_course` VALUES (317, 220002, '应用微生物学', 55.00);
+INSERT INTO `user_course` VALUES (318, 220002, '创新性思维与方法', 66.00);
+INSERT INTO `user_course` VALUES (319, 220002, 'Java课程设计', 91.00);
+INSERT INTO `user_course` VALUES (320, 220002, 'JavaEE企业开发', 70.00);
 
 SET FOREIGN_KEY_CHECKS = 1;
