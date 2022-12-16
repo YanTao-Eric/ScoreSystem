@@ -5,6 +5,7 @@ from tkinter.ttk import *
 import openpyxl as openpyxl
 
 import AddCoursePage
+import CourseScoreAnalysis
 import Dao
 import DeleteCoursePage
 import Login
@@ -13,6 +14,9 @@ import UpdateCoursePage
 import AddStudentPage
 import DeleteStudentPage
 import UpdateStudentPage
+
+import numpy as np
+import matplotlib.pyplot as plt
 
 class WinGUI(Tk):
     def __init__(self):
@@ -316,9 +320,27 @@ class Frame_content_3(Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.__frame()
+        self.tk_button_pieChart = self.__tk_button_pieChart()
+        self.tk_button_columnChart = self.__tk_button_columnChart()
+        self.tk_button_paratacticColumnChart = self.__tk_button_paratacticColumnChart()
 
     def __frame(self):
         self.place(x=0, y=100, width=1000, height=500)
+
+    def __tk_button_columnChart(self):
+        btn = Button(self, text="课程成绩分析")
+        btn.place(x=80, y=50, width=150, height=70)
+        return btn
+
+    def __tk_button_paratacticColumnChart(self):
+        btn = Button(self, text="班级成绩分析")
+        btn.place(x=420, y=50, width=150, height=70)
+        return btn
+
+    def __tk_button_pieChart(self):
+        btn = Button(self, text="综合成绩评定")
+        btn.place(x=760, y=50, width=150, height=70)
+        return btn
 
 
 class Frame_content_4(Frame):
@@ -666,6 +688,76 @@ class Win(WinGUI):
             messagebox.showinfo("提示", "导出失败！")
             print(e)
 
+    def columnChart(self, evt):
+        x = np.array(["90-100", "80-89", "70-79", "60-69", "0-59"])
+        y = np.array([4, 5, 6, 10, 3])
+        y_pos = np.arange(len(x))
+        plt.xlabel("分数区间")
+        plt.ylabel("人数")
+        # x轴标签
+        plt.xticks(y_pos, x)
+        # 创建条形图
+        plt.bar(x, y, color=["blue", "blue", "blue", "blue", "red"])
+        plt.title('Python成绩')
+        plt.rcParams['font.sans-serif'] = ['SimHei']  # 支持中文显示
+        # 显示
+        plt.show()
+        pass
+
+    def paratacticColumnChart(self, evt):
+        plt.title('本班学生各个科目的最高分、最低分、平均分')
+        # 每个课程的的最高分数
+        max = [93, 95, 87, 91]
+        # 每个课程的最小分数
+        min = [55, 60, 50, 63]
+        # 每个课程的平均分
+        avg = [75.4, 79.2, 65.7, 82.8]
+        # 设置4组数据，所以设置为4
+        x = np.arange(4)
+        # 每组数据n有3个类型
+        total_width, n = 0.6, 3
+        width = total_width / n
+        x = x - (total_width - width) / 2
+        plt.bar(x, max, color="b", width=width, label='max')
+        plt.bar(x + width, min, color="r", width=width, label='min')
+        plt.bar(x + 2 * width, avg, color="gray", width=width, label='avg')
+        # x和y轴标题
+        plt.xlabel("课程")
+        plt.ylabel("分数")
+        plt.legend(loc="best")
+        # x轴命名
+        plt.xticks([0, 1, 2, 3], ['python', 'c', 'dataStructre', 'software'])
+        plt.ylim((0, 100))
+        # 设置纵轴起始,终止和间距
+        my_y_ticks = np.arange(0, 100, 10)
+        plt.yticks(my_y_ticks)
+        plt.rcParams['font.sans-serif'] = ['SimHei']  # 支持中文显示
+        plt.show()
+        pass
+
+    def pieChart(self, evt):
+        # 饼图
+        data = {
+            '优秀': (3, 'b'),
+            '良好': (11, 'gray'),
+            '及格': (10, 'brown'),
+            '不及格': (3, 'r'),
+        }
+        # 设置绘图对象的大小
+        fig = plt.figure(figsize=(8, 8))
+        cities = data.keys()
+        values = [x[0] for x in data.values()]
+        colors = [x[1] for x in data.values()]
+        ax1 = fig.add_subplot(111)
+        ax1.set_title('9班综合成绩评定')
+        labels = ['{}:{}'.format(city, value) for city, value in zip(cities, values)]
+        explode = [0.05, 0, 0, 0]  # 设置饼图的凸出显示
+        ax1.pie(values, labels=labels, colors=colors, explode=explode, shadow=True)  # 画饼状图， 并且指定标签和对应的颜色  指定阴影效果
+        # plt.savefig('pie.jpg') # 保存成图片
+        plt.rcParams['font.sans-serif'] = ['SimHei']  # 中文
+        plt.show()
+        pass
+
     def __event_bind(self):
         self.protocol('WM_DELETE_WINDOW', self.logout)
         self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.bind('<<TreeviewSelect>>', self.updateStudentInfo)
@@ -678,6 +770,11 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_1.tk_button_delete_student.bind('<Button-1>', self.deleteStudentInfo)
         self.tk_tabs_content.tk_tabs_content_2.tk_button_add_score.bind('<Button-1>', self.addStudentScore)
         self.tk_tabs_content.tk_tabs_content_2.tk_button_delete_score.bind('<Button-1>', self.deleteStudentScore)
+
+        self.tk_tabs_content.tk_tabs_content_3.tk_button_columnChart.bind('<Button-1>', self.columnChart)
+        self.tk_tabs_content.tk_tabs_content_3.tk_button_paratacticColumnChart.bind('<Button-1>', self.paratacticColumnChart)
+        self.tk_tabs_content.tk_tabs_content_3.tk_button_pieChart.bind('<Button-1>', self.pieChart)
+
         self.tk_tabs_content.tk_tabs_content_4.tk_button_update_tea_pwd.bind('<Button-1>', self.updateTeacherPassword)
         self.tk_tabs_content.tk_tabs_content_5.tk_button_add_course.bind('<Button-1>', self.addCourseInfo)
         self.tk_tabs_content.tk_tabs_content_5.tk_button_delete_course.bind('<Button-1>', self.deleteCourseInfo)

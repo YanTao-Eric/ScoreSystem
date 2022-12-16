@@ -10,7 +10,7 @@ def getConnect():
         host='localhost',
         port=3306,
         user='root',
-        password='521027',
+        password='GDragon0818.',
         db='stu_sc_sys',
         charset='utf8',
         cursorclass=pymysql.cursors.DictCursor

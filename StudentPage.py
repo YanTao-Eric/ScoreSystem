@@ -1,16 +1,9 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import *
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.pylab import mpl
-
-from matplotlib.backends._backend_tk import NavigationToolbar2Tk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 import Dao
 import Login
-import analysis
 import test
 
 global current_uid
