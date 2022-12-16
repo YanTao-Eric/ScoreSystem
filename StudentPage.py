@@ -2,9 +2,11 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import *
 
+import numpy as np
+from matplotlib import pyplot as plt
+
 import Dao
 import Login
-import test
 
 global current_uid
 
@@ -56,9 +58,6 @@ class Frame_content(Notebook):
 
         self.tk_tabs_content_1 = Frame_content_1(self)
         self.add(self.tk_tabs_content_1, text="成绩查询")
-
-        self.tk_tabs_content_2 = Frame_content_2(self)
-        self.add(self.tk_tabs_content_2, text="成绩分析")
 
         self.tk_tabs_content_3 = Frame_content_3(self)
         self.add(self.tk_tabs_content_3, text="修改密码")
@@ -119,12 +118,6 @@ class Frame_content_0(Frame):
         cb['values'] = ("男", "女")
         cb.place(x=490, y=180, width=150, height=30)
         return cb
-
-    # def __tk_input_stu_age(self):
-    #     self.student_age = StringVar(self)
-    #     ipt = Entry(self, text=self.student_age)
-    #     ipt.place(x=490, y=180, width=150, height=30)
-    #     return ipt
 
     def __tk_label_stu_identity(self):
         label = Label(self, text="身份证号", anchor="e")
@@ -230,15 +223,6 @@ class Frame_content_1(Frame):
         return btn
 
 
-class Frame_content_2(Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.__frame()
-
-    def __frame(self):
-        self.place(x=0, y=100, width=1000, height=500)
-
-
 class Frame_content_3(Frame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -306,6 +290,8 @@ class Win(WinGUI):
     def logout(self):
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
+        login = Login.Win()
+        login.mainloop()
 
     def updateStudentInfo(self, evt):
         __stu_name = self.tk_tabs_content.tk_tabs_content_0.tk_input_stu_name.get()
@@ -333,12 +319,27 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_0.student_email.set(self.userInfo[5])
 
     def analysisStudentScore(self, evt):
-        res_score = Dao.getScoreByUid(self.uid).get("data")
-        data = {
-            "x": [i.get("cname") for i in res_score],
-            "y": [float(i.get("score")) for i in res_score]
-        }
-        test.createAnalysisWindow(data)
+        result = Dao.getScoreByUid(self.uid).get("data")
+        plt.title('成绩统计图')
+        # 设置x轴数据
+        x = [i.get("cname") for i in result]
+        # 每组数据n有3个类型
+        total_width, n = 0.6, 3
+        width = total_width / n
+        y1 = [i.get("score") for i in result]
+        y2 = [i.get("avg_score") for i in Dao.getAllCourseAvgScore(self.uid).get("data")]
+        plt.bar(x, y1, color="b", width=width, label='我的成绩')
+        plt.plot(x, y2, color="g", label='科目平均成绩')
+        # x和y轴标题
+        plt.xlabel("课程")
+        plt.ylabel("分数")
+        plt.legend(loc="best")
+        plt.ylim((0, 100))
+        # 设置纵轴起始,终止和间距
+        my_y_ticks = np.arange(0, 100, 10)
+        plt.yticks(my_y_ticks)
+        plt.rcParams['font.sans-serif'] = ['SimHei']  # 支持中文显示
+        plt.show()
         print("成绩分析图表绘制")
 
     def searchStudentScore(self, evt):
@@ -373,6 +374,8 @@ class Win(WinGUI):
     def logout_user(self, evt):
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
+        login = Login.Win()
+        login.mainloop()
 
     def __event_bind(self):
         self.protocol('WM_DELETE_WINDOW', self.logout)

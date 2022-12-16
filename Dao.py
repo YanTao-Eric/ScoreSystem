@@ -514,3 +514,24 @@ def getAllClasses():
     cursor.close()
     connection.close()
     return res
+
+
+def getAllCourseAvgScore(uid):
+    """
+    获取所有课程的平均分
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select cname, AVG(score) as avg_score from user_course where cname in " \
+          f"(select cname from user_course where uid = '{uid}') group by cname"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+

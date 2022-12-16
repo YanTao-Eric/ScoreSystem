@@ -27,14 +27,14 @@ class WinGUI(Tk):
 
     def __tk_button_sure(self):
         btn = Button(self, text="确定")
-        btn.place(x=200, y=20, width=50, height=24)
+        btn.place(x=200, y=20, width=50, height=30)
         return btn
 
     def __tk_select_box_classSelect(self):
         cb = Combobox(self, state="readonly")
         cb['values'] =[i.get("uclid") for i in Dao.getAllClasses().get("data")]
         cb.current(0)
-        cb.place(x=10, y=20, width=173, height=25)
+        cb.place(x=10, y=20, width=173, height=30)
         return cb
 
 
@@ -61,12 +61,10 @@ class Win(WinGUI):
         plt.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
                 shadow=True, startangle=90)
         plt.rcParams['font.sans-serif'] = ['SimHei']  # 中文
+
+        self.destroy()
         plt.show()
 
     def __event_bind(self):
         self.tk_button_sure.bind('<Button-1>', self.sureSelect)
 
-
-if __name__ == "__main__":
-    win = Win()
-    win.mainloop()

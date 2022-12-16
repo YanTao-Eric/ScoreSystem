@@ -493,6 +493,8 @@ class Win(WinGUI):
             print(e)
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
+        login = Login.Win()
+        login.mainloop()
 
     def updateStudentInfo(self, evt):
         current_focus = self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.focus()
@@ -519,7 +521,8 @@ class Win(WinGUI):
             return
         res = Dao.updateUser(self.uid, __tea_name, __tea_gender, __tea_identify, 0, __tea_email)
         messagebox.showinfo("提示", res.get("msg"))
-        print("更新学生信息", evt)
+        self.tk_label_current_user['text'] = "当前用户：" + __tea_name
+        print("更新教师信息", evt)
 
     def resetTeacherInfo(self, evt):
         self.tk_tabs_content.tk_tabs_content_0.tea_name.set(self.current_user.get("uname"))
@@ -633,6 +636,8 @@ class Win(WinGUI):
     def logout_user(self, evt):
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
+        login = Login.Win()
+        login.mainloop()
 
     def studentinfo_refresh(self, evt):
         # 删除原结点，加入新结点

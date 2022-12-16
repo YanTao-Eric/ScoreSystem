@@ -28,12 +28,12 @@ class WinGUI(Tk):
 
         cb['values'] = [i.get("cname") for i in Dao.getAllCourses().get("data")]
         cb.current(0)
-        cb.place(x=10, y=20, width=173, height=24)
+        cb.place(x=10, y=20, width=173, height=30)
         return cb
 
     def __tk_button_sure(self):
         btn = Button(self, text="确定")
-        btn.place(x=200, y=20, width=50, height=24)
+        btn.place(x=200, y=20, width=50, height=30)
         return btn
 
 
@@ -61,12 +61,11 @@ class Win(WinGUI):
         plt.bar(x, y, color=["blue", "blue", "blue", "blue", "red"])
         plt.title('{} 成绩'.format(value))
         plt.rcParams['font.sans-serif'] = ['SimHei']  # 支持中文显示
+
+        self.destroy()
         # 显示
         plt.show()
 
     def __event_bind(self):
         self.tk_button_sure.bind('<Button-1>', self.sureSelect)
 
-if __name__ == "__main__":
-    win = Win()
-    win.mainloop()
