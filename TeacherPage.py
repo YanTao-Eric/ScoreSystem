@@ -5,6 +5,8 @@ from tkinter.ttk import *
 import openpyxl as openpyxl
 
 import AddCoursePage
+import ClassGradeAnalysis
+import ComprehensivePerformanceEvaluation
 import CourseScoreAnalysis
 import Dao
 import DeleteCoursePage
@@ -689,74 +691,20 @@ class Win(WinGUI):
             print(e)
 
     def columnChart(self, evt):
-        x = np.array(["90-100", "80-89", "70-79", "60-69", "0-59"])
-        y = np.array([4, 5, 6, 10, 3])
-        y_pos = np.arange(len(x))
-        plt.xlabel("分数区间")
-        plt.ylabel("人数")
-        # x轴标签
-        plt.xticks(y_pos, x)
-        # 创建条形图
-        plt.bar(x, y, color=["blue", "blue", "blue", "blue", "red"])
-        plt.title('Python成绩')
-        plt.rcParams['font.sans-serif'] = ['SimHei']  # 支持中文显示
-        # 显示
-        plt.show()
+        courseScoreAnalysis = CourseScoreAnalysis.Win()
+        courseScoreAnalysis.mainloop()
         pass
 
     def paratacticColumnChart(self, evt):
-        plt.title('本班学生各个科目的最高分、最低分、平均分')
-        # 每个课程的的最高分数
-        max = [93, 95, 87, 91]
-        # 每个课程的最小分数
-        min = [55, 60, 50, 63]
-        # 每个课程的平均分
-        avg = [75.4, 79.2, 65.7, 82.8]
-        # 设置4组数据，所以设置为4
-        x = np.arange(4)
-        # 每组数据n有3个类型
-        total_width, n = 0.6, 3
-        width = total_width / n
-        x = x - (total_width - width) / 2
-        plt.bar(x, max, color="b", width=width, label='max')
-        plt.bar(x + width, min, color="r", width=width, label='min')
-        plt.bar(x + 2 * width, avg, color="gray", width=width, label='avg')
-        # x和y轴标题
-        plt.xlabel("课程")
-        plt.ylabel("分数")
-        plt.legend(loc="best")
-        # x轴命名
-        plt.xticks([0, 1, 2, 3], ['python', 'c', 'dataStructre', 'software'])
-        plt.ylim((0, 100))
-        # 设置纵轴起始,终止和间距
-        my_y_ticks = np.arange(0, 100, 10)
-        plt.yticks(my_y_ticks)
-        plt.rcParams['font.sans-serif'] = ['SimHei']  # 支持中文显示
-        plt.show()
+        classGradeAnalysis = ClassGradeAnalysis.Win()
+        classGradeAnalysis.mainloop()
         pass
 
     def pieChart(self, evt):
-        # 饼图
-        data = {
-            '优秀': (3, 'b'),
-            '良好': (11, 'gray'),
-            '及格': (10, 'brown'),
-            '不及格': (3, 'r'),
-        }
-        # 设置绘图对象的大小
-        fig = plt.figure(figsize=(8, 8))
-        cities = data.keys()
-        values = [x[0] for x in data.values()]
-        colors = [x[1] for x in data.values()]
-        ax1 = fig.add_subplot(111)
-        ax1.set_title('9班综合成绩评定')
-        labels = ['{}:{}'.format(city, value) for city, value in zip(cities, values)]
-        explode = [0.05, 0, 0, 0]  # 设置饼图的凸出显示
-        ax1.pie(values, labels=labels, colors=colors, explode=explode, shadow=True)  # 画饼状图， 并且指定标签和对应的颜色  指定阴影效果
-        # plt.savefig('pie.jpg') # 保存成图片
-        plt.rcParams['font.sans-serif'] = ['SimHei']  # 中文
-        plt.show()
+        comprehensivePerformanceEvaluation = ComprehensivePerformanceEvaluation.Win()
+        comprehensivePerformanceEvaluation.mainloop()
         pass
+
 
     def __event_bind(self):
         self.protocol('WM_DELETE_WINDOW', self.logout)

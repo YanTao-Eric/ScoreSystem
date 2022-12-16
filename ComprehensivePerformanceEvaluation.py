@@ -1,19 +1,21 @@
 from tkinter import *
 from tkinter.ttk import *
 
-import Dao
 import numpy as np
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
+
+import Dao
+
 
 class WinGUI(Tk):
     def __init__(self):
         super().__init__()
         self.__win()
-        self.tk_select_box_select = self.__tk_select_box_select()
         self.tk_button_sure = self.__tk_button_sure()
+        self.tk_select_box_classSelect = self.__tk_select_box_classSelect()
 
     def __win(self):
-        self.title("课程成绩分析")
+        self.title("综合成绩评定")
         # 设置窗口大小、居中
         width = 261
         height = 262
@@ -23,18 +25,17 @@ class WinGUI(Tk):
         self.geometry(geometry)
         self.resizable(width=False, height=False)
 
-    def __tk_select_box_select(self):
-        cb = Combobox(self, state="readonly")
-
-        cb['values'] = [i.get("cname") for i in Dao.getAllCourses().get("data")]
-        cb.current(0)
-        cb.place(x=10, y=20, width=173, height=24)
-        return cb
-
     def __tk_button_sure(self):
         btn = Button(self, text="确定")
         btn.place(x=200, y=20, width=50, height=24)
         return btn
+
+    def __tk_select_box_classSelect(self):
+        cb = Combobox(self, state="readonly")
+        cb['values'] =[i.get("uclid") for i in Dao.getAllClasses().get("data")]
+        cb.current(0)
+        cb.place(x=10, y=20, width=173, height=25)
+        return cb
 
 
 class Win(WinGUI):
@@ -48,24 +49,23 @@ class Win(WinGUI):
         return menu
 
     def sureSelect(self, evt):
-        value = self.tk_select_box_select.get()
-        result = Dao.getScoreBandByCName(value).get("data")
-        x = np.array(["90-100", "80-89", "70-79", "60-69", "0-59"])
-        y = np.array(list(result[0].values()))
-        y_pos = np.arange(len(x))
-        plt.xlabel("分数区间")
-        plt.ylabel("人数")
-        # x轴标签
-        plt.xticks(y_pos, x)
-        # 创建条形图
-        plt.bar(x, y, color=["blue", "blue", "blue", "blue", "red"])
-        plt.title('{} 成绩'.format(value))
-        plt.rcParams['font.sans-serif'] = ['SimHei']  # 支持中文显示
-        # 显示
+        value = self.tk_select_box_classSelect.get()
+        result = Dao.getOverallGradeLevelByCLid(value).get("data")
+        fig = plt.figure(figsize=(8, 8))
+        a = fig.add_subplot(111)
+        a.set_title('{} 班综合成绩评定'.format(value))
+        labels = '优秀', '良好', '及格', '不及格'
+        sizes = np.array(list(result[0].values()))
+        # 设置分离的距离，0表示不分离
+        explode = (0.1, 0, 0, 0)
+        plt.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+                shadow=True, startangle=90)
+        plt.rcParams['font.sans-serif'] = ['SimHei']  # 中文
         plt.show()
 
     def __event_bind(self):
         self.tk_button_sure.bind('<Button-1>', self.sureSelect)
+
 
 if __name__ == "__main__":
     win = Win()
