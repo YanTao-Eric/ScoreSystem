@@ -70,15 +70,20 @@ def updatePassword(uid, origin_pwd, new_pwd):
     return res
 
 
-def getScoreByUid(uid):
+def getScoreByUid(uid, nature='', department='', exam_method=''):
     """
     通过学号获取成绩
     :param uid:
+    :param nature:
+    :param department:
+    :param exam_method:
     :return:
     """
     conn, cursor = getConnect()
-    sql = f"select ROW_NUMBER() over () as id, uc.uid, uc.cname, score, u.uname, c.cnature from user_course uc " \
-          f"inner join user u on uc.uid = u.uid inner join course c on uc.cname = c.cname where u.uid = '{uid}'"
+    sql = f"select ROW_NUMBER() over () as id, uc.cname, c.cnature, c.cdepartment, c.cexammethod, c.ccredit, score " \
+          f"from user_course uc inner join user u on uc.uid = u.uid inner join course c on uc.cname = c.cname " \
+          f"where u.uid = '{uid}' and c.cnature like '%{nature}%' and " \
+          f"c.cdepartment like '%{department}%' and c.cexammethod like '%{exam_method}%'"
     print(sql)
     cursor.execute(sql)
     res = {
@@ -535,3 +540,131 @@ def getAllCourseAvgScore(uid):
     return res
 
 
+def searchStudentScore(course_name='', course_nature='', course_department=''):
+    """
+    搜索学生成绩
+    :param course_name:
+    :param course_nature:
+    :param course_department:
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select ROW_NUMBER() over () as id, u.uid, u.uname, uc.cname, c.cnature, c.cdepartment, c.cexammethod, " \
+          f"c.ccredit, score from user_course uc inner join user u on uc.uid = u.uid inner join course c " \
+          f"on uc.cname = c.cname where c.cname like '%{course_name}%' and " \
+          f"c.cnature like '%{course_nature}%' and c.cdepartment like '%{course_department}%'"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def getScoreByUidAndCName(uid, course_name):
+    """
+    查找学号为uid课程为course_name的学生成绩
+    :param uid:
+    :param course_name:
+    :return:
+    """
+    connection, cursor = getConnect()
+    sql = f"select uid, cname, score from user_course where uid = '{uid}' and cname = '{course_name}'"
+    cursor.execute(sql)
+    res = {
+        "code": 0,
+        "msg": "success",
+        "data": cursor.fetchall()
+    }
+    cursor.close()
+    connection.close()
+    return res
+
+
+def addStudentScore(uid, course_name, score):
+    connection, cursor = getConnect()
+    if not cursor.execute(f"select uid from user where uid = '{uid}'"):
+        return {
+            "code": 1,
+            "msg": "学号不存在！"
+        }
+    if cursor.execute(f"select 1 from user_course where uid = '{uid}' and cname = '{course_name}' limit 1"):
+        return {
+            "code": 1,
+            "msg": f"该学生的{course_name}课程成绩已经存在！"
+        }
+    sql = f"insert into user_course(uid, cname, score) VALUES ('{uid}', '{course_name}', '{score}')"
+    res = {
+        "code": 0,
+        "msg": "添加成绩成功！"
+    }
+    try:
+        cursor.execute(sql)
+        connection.commit()
+    except Exception as e:
+        res = {
+            "code": 1,
+            "msg": "添加成绩失败！"
+        }
+        connection.rollback()
+        print(e)
+    cursor.close()
+    connection.close()
+    return res
+
+
+def deleteStudentScore(uid, course_name):
+    connection, cursor = getConnect()
+    if not cursor.execute(f"select uid from user where uid = '{uid}'"):
+        return {
+            "code": 1,
+            "msg": "学号不存在！"
+        }
+    sql = f"delete from user_course where uid = '{uid}' and cname = '{course_name}'"
+    res = {
+        "code": 0,
+        "msg": "删除成绩成功！"
+    }
+    try:
+        code = cursor.execute(sql)
+        connection.commit()
+        if code == 0:
+            res = {
+                "code": 0,
+                "msg": f"该学生的{course_name}课程成绩不存在！"
+            }
+    except Exception as e:
+        res = {
+            "code": 1,
+            "msg": "删除成绩失败！"
+        }
+        connection.rollback()
+        print(e)
+    cursor.close()
+    connection.close()
+    return res
+
+
+def updateStudentScore(uid, course_name, score):
+    connection, cursor = getConnect()
+    sql = f"update user_course set score = '{score}' where uid = '{uid}' and cname = '{course_name}'"
+    res = {
+        "code": 0,
+        "msg": "修改成绩成功！"
+    }
+    try:
+        cursor.execute(sql)
+        connection.commit()
+    except Exception as e:
+        res = {
+            "code": 1,
+            "msg": "修改成绩失败！"
+        }
+        connection.rollback()
+        print(e)
+    cursor.close()
+    connection.close()
+    return res

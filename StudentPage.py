@@ -1,8 +1,9 @@
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 from tkinter.ttk import *
 
 import numpy as np
+import openpyxl
 from matplotlib import pyplot as plt
 
 import Dao
@@ -169,22 +170,19 @@ class Frame_content_1(Frame):
 
     def __tk_table_stu_score(self):
         # 表头字段 表头宽度
-        columns = {"ID": 50, "字段#1": 100, "字段#2": 100}
+        self.tk_table_stu_score_columns = {"#": 50, "课程名称": 200, "课程性质": 150, "开课学院": 300, "考试方式": 100, "学分": 100, "成绩": 100}
         # 初始化表格 表格是基于Treeview，tkinter本身没有表格。show="headings" 为隐藏首列。
-        tk_table = Treeview(self, show="headings", columns=list(columns))
-        for text, width in columns.items():  # 批量设置列属性
+        tk_table = Treeview(self, show="headings", columns=list(self.tk_table_stu_score_columns))
+        for text, width in self.tk_table_stu_score_columns.items():  # 批量设置列属性
             tk_table.heading(text, text=text, anchor='center')
             tk_table.column(text, anchor='center', width=width, stretch=False)  # stretch 不自动拉伸
 
         # 插入数据示例
-        # data = [
-        #     [1, "github", "https://github.com/iamxcd/tkinter-helper"],
-        #     [2, "演示地址", "https://www.pytk.net/tkinter-helper"]
-        # ]
-        #
+        # self.tk_score_table_dataset = Dao.getScoreByUid(8888)
         # # 导入初始数据
-        # for values in data:
-        #     tk_table.insert('', END, values=values)
+        # if self.tk_score_table_dataset.get("code") == 0 and self.tk_score_table_dataset.get("data"):
+        #     for data in self.tk_score_table_dataset.get("data"):
+        #         tk_table.insert('', END, values=list(data.values()))
 
         tk_table.place(x=0, y=55, width=1000, height=420)
         return tk_table
@@ -196,19 +194,31 @@ class Frame_content_1(Frame):
 
     def __tk_select_box_course_nature(self):
         cb = Combobox(self, state="readonly")
-        cb['values'] = ("列表框", "Python", "Tkinter Helper")
+        values = ["请选择课程性质"]
+        for i in Dao.getDataDictByType("nature").get("data"):
+            values.append(i.get("v"))
+        cb['values'] = values
+        cb.current(0)
         cb.place(x=180, y=10, width=150, height=30)
         return cb
 
     def __tk_select_box_course_department(self):
         cb = Combobox(self, state="readonly")
-        cb['values'] = ("列表框", "Python", "Tkinter Helper")
+        values = ["请选择开课学院"]
+        for i in Dao.getAllDepartments().get("data"):
+            values.append(i.get("v"))
+        cb['values'] = values
+        cb.current(0)
         cb.place(x=370, y=10, width=150, height=30)
         return cb
 
     def __tk_select_box_exam_method(self):
         cb = Combobox(self, state="readonly")
-        cb['values'] = ("列表框", "Python", "Tkinter Helper")
+        values = ["请选择考试方式"]
+        for i in Dao.getDataDictByType("exammethod").get("data"):
+            values.append(i.get("v"))
+        cb['values'] = values
+        cb.current(0)
         cb.place(x=560, y=10, width=150, height=30)
         return cb
 
@@ -287,6 +297,13 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_0.student_identify.set(current_user.get("uidentify"))
         self.tk_tabs_content.tk_tabs_content_0.student_email.set(current_user.get("uemail"))
 
+        # 插入数据示例
+        self.score_table_dataset = Dao.getScoreByUid(self.uid)
+        # 导入初始数据
+        if self.score_table_dataset.get("code") == 0 and self.score_table_dataset.get("data"):
+            for data in self.score_table_dataset.get("data"):
+                self.tk_tabs_content.tk_tabs_content_1.tk_table_stu_score.insert('', END, values=list(data.values()))
+
     def logout(self):
         messagebox.showwarning('提示', '欢迎下次使用！')
         self.destroy()
@@ -309,6 +326,7 @@ class Win(WinGUI):
             return
         res = Dao.updateUser(self.uid, __stu_name, __stu_gender, __stu_identify, self.uclid, __stu_email)
         messagebox.showinfo("提示", res.get("msg"))
+        self.tk_label_current_user['text'] = "当前用户：" + __stu_name
         print("更新学生信息", evt)
 
     def stu_reset(self, evt):
@@ -343,9 +361,45 @@ class Win(WinGUI):
         print("成绩分析图表绘制")
 
     def searchStudentScore(self, evt):
-        print("<Button-1>事件未处理", evt)
+        __score_query = self.tk_tabs_content.tk_tabs_content_1
+        __nature = __score_query.tk_select_box_course_nature.get()
+        __department = __score_query.tk_select_box_course_department.get()
+        __exammethod = __score_query.tk_select_box_exam_method.get()
+        if __score_query.tk_select_box_course_nature.current() == 0:
+            __nature = ''
+        if __score_query.tk_select_box_course_department.current() == 0:
+            __department = ''
+        if __score_query.tk_select_box_exam_method.current() == 0:
+            __exammethod = ''
+        for _ in map(__score_query.tk_table_stu_score.delete, __score_query.tk_table_stu_score.get_children("")):
+            pass
+        self.score_table_dataset = Dao.getScoreByUid(self.uid, __nature, __department, __exammethod)
+        # 导入初始数据
+        if self.score_table_dataset.get("code") == 0 and self.score_table_dataset.get("data"):
+            for data in self.score_table_dataset.get("data"):
+                __score_query.tk_table_stu_score.insert('', END, values=list(data.values()))
+        __score_query.tk_select_box_course_nature.current(0)
+        __score_query.tk_select_box_course_department.current(0)
+        __score_query.tk_select_box_exam_method.current(0)
+        print(f"查询学生{self.uid}的成绩！")
 
     def exportStudentScore(self, evt):
+        path = filedialog.askdirectory()
+        try:
+            book = openpyxl.Workbook()
+            sheet = book.active
+            fff = list(self.tk_tabs_content.tk_tabs_content_1.tk_table_stu_score_columns.keys())  # 获取表头信息
+            sheet.append(fff)
+            dataset = [list(data_item.values()) for data_item in
+                       self.score_table_dataset.get("data")]
+            print(dataset)
+            for i in dataset:
+                sheet.append(i)
+            book.save(f"{path}/{self.uid}.xlsx")
+            messagebox.showinfo("提示", "导出成功！")
+        except Exception as e:
+            messagebox.showinfo("提示", "导出失败！")
+            print(e)
         print("<Button-1>事件未处理", evt)
 
     def updateStudentPassword(self, evt):

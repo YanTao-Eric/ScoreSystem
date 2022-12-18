@@ -5,16 +5,19 @@ from tkinter.ttk import *
 import openpyxl as openpyxl
 
 import AddCoursePage
+import AddScorePage
 import ClassGradeAnalysis
 import ComprehensivePerformanceEvaluation
 import CourseScoreAnalysis
 import Dao
 import DeleteCoursePage
+import DeleteScorePage
 import Login
 import UpdateCoursePage
 
 import AddStudentPage
 import DeleteStudentPage
+import UpdateScorePage
 import UpdateStudentPage
 
 import numpy as np
@@ -260,52 +263,35 @@ class Frame_content_2(Frame):
         super().__init__(parent)
         self.__frame()
         self.tk_table_stu_score = self.__tk_table_stu_score()
-        self.tk_input_stu_name_score = self.__tk_input_stu_name_score()
-        self.tk_select_box_stu_major_course = self.__tk_select_box_stu_major_course()
-        self.tk_button_stu_score_search = self.__tk_button_stu_score_search()
         self.tk_button_add_score = self.__tk_button_add_score()
         self.tk_button_delete_score = self.__tk_button_delete_score()
+        self.tk_select_box_score_course_name = self.__tk_select_box_score_course_name()
+        self.tk_select_box_score_nature = self.__tk_select_box_score_nature()
+        self.tk_select_box_score_department = self.__tk_select_box_score_department()
+        self.tk_button_stu_score_search = self.__tk_button_stu_score_search()
+        self.tk_button_stu_score_export = self.__tk_button_stu_score_export()
 
     def __frame(self):
         self.place(x=0, y=100, width=1000, height=500)
 
     def __tk_table_stu_score(self):
         # 表头字段 表头宽度
-        columns = {"ID": 200, "字段#1": 300, "字段#2": 500}
+        self.tk_table_stu_score_columns = {"#": 50, "学号": 70, "姓名": 80, "课程名称": 200, "课程性质": 100, "开课学院": 270, "考试方式": 80, "学分": 50, "成绩": 100}
         # 初始化表格 表格是基于Treeview，tkinter本身没有表格。show="headings" 为隐藏首列。
-        tk_table = Treeview(self, show="headings", columns=list(columns))
-        for text, width in columns.items():  # 批量设置列属性
+        tk_table = Treeview(self, show="headings", columns=list(self.tk_table_stu_score_columns))
+        for text, width in self.tk_table_stu_score_columns.items():  # 批量设置列属性
             tk_table.heading(text, text=text, anchor='center')
             tk_table.column(text, anchor='center', width=width, stretch=False)  # stretch 不自动拉伸
 
         # 插入数据示例
-        # data = [
-        #     [1, "github", "https://github.com/iamxcd/tkinter-helper"],
-        #     [2, "演示地址", "https://www.pytk.net/tkinter-helper"]
-        # ]
-        #
-        # # 导入初始数据
-        # for values in data:
-        #     tk_table.insert('', END, values=values)
+        self.tk_score_table_dataset = Dao.searchStudentScore()
+        # 导入初始数据
+        if self.tk_score_table_dataset.get("code") == 0 and self.tk_score_table_dataset.get("data"):
+            for data in self.tk_score_table_dataset.get("data"):
+                tk_table.insert('', END, values=list(data.values()))
 
         tk_table.place(x=0, y=60, width=1000, height=415)
         return tk_table
-
-    def __tk_input_stu_name_score(self):
-        ipt = Entry(self)
-        ipt.place(x=360, y=10, width=150, height=30)
-        return ipt
-
-    def __tk_select_box_stu_major_course(self):
-        cb = Combobox(self, state="readonly")
-        cb['values'] = ("Java", "Python", "C++")
-        cb.place(x=540, y=10, width=150, height=30)
-        return cb
-
-    def __tk_button_stu_score_search(self):
-        btn = Button(self, text="搜索")
-        btn.place(x=720, y=10, width=100, height=30)
-        return btn
 
     def __tk_button_add_score(self):
         btn = Button(self, text="添加成绩")
@@ -314,7 +300,47 @@ class Frame_content_2(Frame):
 
     def __tk_button_delete_score(self):
         btn = Button(self, text="删除成绩")
-        btn.place(x=180, y=10, width=100, height=30)
+        btn.place(x=170, y=10, width=100, height=30)
+        return btn
+
+    def __tk_select_box_score_course_name(self):
+        cb = Combobox(self, state="readonly")
+        values = ["请选择课程名称"]
+        for i in Dao.getAllCourses().get("data"):
+            values.append(i.get("cname"))
+        cb['values'] = values
+        cb.current(0)
+        cb.place(x=290, y=10, width=150, height=30)
+        return cb
+
+    def __tk_select_box_score_nature(self):
+        cb = Combobox(self, state="readonly")
+        values = ["请选择课程性质"]
+        for i in Dao.getDataDictByType("nature").get("data"):
+            values.append(i.get("v"))
+        cb['values'] = values
+        cb.current(0)
+        cb.place(x=460, y=10, width=150, height=30)
+        return cb
+
+    def __tk_select_box_score_department(self):
+        cb = Combobox(self, state="readonly")
+        values = ["请选择开课学院"]
+        for i in Dao.getAllDepartments().get("data"):
+            values.append(i.get("v"))
+        cb['values'] = values
+        cb.current(0)
+        cb.place(x=630, y=10, width=150, height=30)
+        return cb
+
+    def __tk_button_stu_score_search(self):
+        btn = Button(self, text="搜索")
+        btn.place(x=800, y=10, width=70, height=30)
+        return btn
+
+    def __tk_button_stu_score_export(self):
+        btn = Button(self, text="导出")
+        btn.place(x=890, y=10, width=70, height=30)
         return btn
 
 
@@ -532,13 +558,79 @@ class Win(WinGUI):
         print("重置教师信息", evt)
 
     def searchStudentInfo(self, evt):
-        print("<Button-1>事件未处理", evt)
+        for _ in map(self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.delete,
+                     self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.get_children("")):
+            pass
+        value = self.tk_tabs_content.tk_tabs_content_1.tk_input_stu_name.get()
+        num = self.tk_tabs_content.tk_tabs_content_1.tk_select_box_stu_gender.get()
+        print(num, value)
+        if num == '请选择性别':
+            result = Dao.searchStudents(value, '')
+        else:
+            result = Dao.searchStudents(value, num)
+        if result.get("code") == 0:
+            if result.get("data"):
+                # print(result.get("data"))
+                for values in result.get("data"):
+                    self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.insert('', END, values=list(values.values()))
+            else:
+                print("未查询到数据！")
+        else:
+            print("数据查询异常！")
+        print("搜索学生信息", evt)
 
     def updateStudentScore(self, evt):
-        print("<<TreeviewSelect>>事件未处理", evt)
+        current_item = self.tk_tabs_content.tk_tabs_content_2.tk_table_stu_score.set(self.tk_tabs_content.tk_tabs_content_2.tk_table_stu_score.focus())
+        data = {
+            "uid": current_item.get("学号"),
+            "cname": current_item.get("课程名称"),
+            "score": current_item.get("成绩")
+        }
+        updateScorePage = UpdateScorePage.Win(data)
+        updateScorePage.mainloop()
+        print("修改学生课程成绩", evt)
 
     def searchStuScore(self, evt):
-        print("<Button-1>事件未处理", evt)
+        __score_manage = self.tk_tabs_content.tk_tabs_content_2
+        __course_name = __score_manage.tk_select_box_score_course_name.get()
+        __course_nature = __score_manage.tk_select_box_score_nature.get()
+        __course_department = __score_manage.tk_select_box_score_department.get()
+        if __score_manage.tk_select_box_score_course_name.current() == 0:
+            __course_name = ''
+        if __score_manage.tk_select_box_score_nature.current() == 0:
+            __course_nature = ''
+        if __score_manage.tk_select_box_score_department.current() == 0:
+            __course_department = ''
+        for _ in map(__score_manage.tk_table_stu_score.delete, __score_manage.tk_table_stu_score.get_children("")):
+            pass
+        __score_manage.tk_score_table_dataset = Dao.searchStudentScore(__course_name, __course_nature, __course_department)
+        # 导入初始数据
+        if __score_manage.tk_score_table_dataset.get("code") == 0 and __score_manage.tk_score_table_dataset.get("data"):
+            for data in __score_manage.tk_score_table_dataset.get("data"):
+                __score_manage.tk_table_stu_score.insert('', END, values=list(data.values()))
+        __score_manage.tk_select_box_score_course_name.current(0)
+        __score_manage.tk_select_box_score_nature.current(0)
+        __score_manage.tk_select_box_score_department.current(0)
+        print("搜索学生成绩！")
+
+    def exportStuScore(self, evt):
+        path = filedialog.askdirectory()
+        try:
+            book = openpyxl.Workbook()
+            sheet = book.active
+            fff = list(self.tk_tabs_content.tk_tabs_content_2.tk_table_stu_score_columns.keys())  # 获取表头信息
+            sheet.append(fff)
+            dataset = [list(data_item.values()) for data_item in
+                       self.tk_tabs_content.tk_tabs_content_2.tk_score_table_dataset.get("data")]
+            print(dataset)
+            for i in dataset:
+                sheet.append(i)
+            book.save(f"{path}/student_score.xlsx")
+            messagebox.showinfo("提示", "导出成功！")
+        except Exception as e:
+            messagebox.showinfo("提示", "导出失败！")
+            print(e)
+        print("导出学生成绩！", evt)
 
     def addStudentInfo(self, evt):
         self.addInfo = AddStudentPage.Win()
@@ -551,10 +643,13 @@ class Win(WinGUI):
         print("<Button-1>事件未处理", evt)
 
     def addStudentScore(self, evt):
-        print("<Button-1>事件未处理", evt)
+        addScorePage = AddScorePage.Win()
+        addScorePage.mainloop()
 
     def deleteStudentScore(self, evt):
-        print("<Button-1>事件未处理", evt)
+        deleteScorePage = DeleteScorePage.Win()
+        deleteScorePage.mainloop()
+        print("删除学生成绩", evt)
 
     def updateTeacherPassword(self, evt):
         __original_pwd = self.tk_tabs_content.tk_tabs_content_4.tk_input_original_pwd.get()
@@ -656,27 +751,6 @@ class Win(WinGUI):
         else:
             print("数据查询异常！")
 
-    def studentinfo_search(self, evt):
-        for _ in map(self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.delete,
-                     self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.get_children("")):
-            pass
-        value = self.tk_tabs_content.tk_tabs_content_1.tk_input_stu_name.get()
-        num = self.tk_tabs_content.tk_tabs_content_1.tk_select_box_stu_gender.get()
-        print(num, value)
-        if num == '请选择性别':
-            result = Dao.searchStudents(value, '')
-        else:
-            result = Dao.searchStudents(value, num)
-        if result.get("code") == 0:
-            if result.get("data"):
-                # print(result.get("data"))
-                for values in result.get("data"):
-                    self.tk_tabs_content.tk_tabs_content_1.tk_table_student_query.insert('', END, values=list(values.values()))
-            else:
-                print("未查询到数据！")
-        else:
-            print("数据查询异常！")
-
     def studentinfo_export(self, evt):
         path = filedialog.askdirectory()
         try:
@@ -698,17 +772,14 @@ class Win(WinGUI):
     def columnChart(self, evt):
         courseScoreAnalysis = CourseScoreAnalysis.Win()
         courseScoreAnalysis.mainloop()
-        pass
 
     def paratacticColumnChart(self, evt):
         classGradeAnalysis = ClassGradeAnalysis.Win()
         classGradeAnalysis.mainloop()
-        pass
 
     def pieChart(self, evt):
         comprehensivePerformanceEvaluation = ComprehensivePerformanceEvaluation.Win()
         comprehensivePerformanceEvaluation.mainloop()
-        pass
 
 
     def __event_bind(self):
@@ -717,13 +788,15 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_0.tk_button_tea_update.bind('<Button-1>', self.updateTeacherInfo)
         self.tk_tabs_content.tk_tabs_content_0.tk_button_tea_reset.bind('<Button-1>', self.resetTeacherInfo)
         self.tk_tabs_content.tk_tabs_content_1.tk_button_stu_search.bind('<Button-1>', self.searchStudentInfo)
-        self.tk_tabs_content.tk_tabs_content_2.tk_table_stu_score.bind('<<TreeviewSelect>>', self.updateStudentScore)
-        self.tk_tabs_content.tk_tabs_content_2.tk_button_stu_score_search.bind('<Button-1>', self.searchStuScore)
         self.tk_tabs_content.tk_tabs_content_1.tk_button_addStudent.bind('<Button-1>', self.addStudentInfo)
         self.tk_tabs_content.tk_tabs_content_1.tk_button_delete_student.bind('<Button-1>', self.deleteStudentInfo)
+        self.tk_tabs_content.tk_tabs_content_1.tk_button_stu_refresh.bind('<Button-1>', self.studentinfo_refresh)
+        self.tk_tabs_content.tk_tabs_content_1.tk_button_studentinfo_export.bind('<Button-1>', self.studentinfo_export)
         self.tk_tabs_content.tk_tabs_content_2.tk_button_add_score.bind('<Button-1>', self.addStudentScore)
         self.tk_tabs_content.tk_tabs_content_2.tk_button_delete_score.bind('<Button-1>', self.deleteStudentScore)
-
+        self.tk_tabs_content.tk_tabs_content_2.tk_table_stu_score.bind('<<TreeviewSelect>>', self.updateStudentScore)
+        self.tk_tabs_content.tk_tabs_content_2.tk_button_stu_score_search.bind('<Button-1>', self.searchStuScore)
+        self.tk_tabs_content.tk_tabs_content_2.tk_button_stu_score_export.bind('<Button-1>', self.exportStuScore)
         self.tk_tabs_content.tk_tabs_content_3.tk_button_columnChart.bind('<Button-1>', self.columnChart)
         self.tk_tabs_content.tk_tabs_content_3.tk_button_paratacticColumnChart.bind('<Button-1>', self.paratacticColumnChart)
         self.tk_tabs_content.tk_tabs_content_3.tk_button_pieChart.bind('<Button-1>', self.pieChart)
@@ -735,6 +808,3 @@ class Win(WinGUI):
         self.tk_tabs_content.tk_tabs_content_5.tk_button_course_export.bind('<Button-1>', self.exportCourseInfo)
         self.tk_tabs_content.tk_tabs_content_5.tk_table_course_manage.bind('<<TreeviewSelect>>', self.updateCourseInfo)
         self.tk_button_logout_user.bind('<Button-1>', self.logout_user)
-        self.tk_tabs_content.tk_tabs_content_1.tk_button_stu_refresh.bind('<Button-1>', self.studentinfo_refresh)
-        self.tk_tabs_content.tk_tabs_content_1.tk_button_stu_search.bind('<Button-1>', self.studentinfo_search)
-        self.tk_tabs_content.tk_tabs_content_1.tk_button_studentinfo_export.bind('<Button-1>', self.studentinfo_export)
