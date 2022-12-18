@@ -154,13 +154,17 @@ class Win(WinGUI):
         else:
             localtime = time.localtime(time.time())
             if int(uclid) < 10:
-                idnumber = str(localtime[0]) + "0" + uclid
+                idnumber = str(localtime[0])[2:] + "0" + uclid
             else:
-                idnumber = str(localtime[0]) + uclid
+                idnumber = str(localtime[0])[2:] + uclid
             result = Dao.getMaxStuNumber(idnumber)
             if result.get("code") == 0:
                 if result.get("data"):
-                    idnumber = result.get("data")[0].get('max_id') + 1
+                    if not result.get("data")[0].get('max_id'):
+                        idnumber = int(idnumber) * 100
+                    else:
+                        idnumber = result.get("data")[0].get('max_id')
+                    idnumber = idnumber + 1
             if Dao.addStudent(idnumber, uname, usex, identityId, int(uclid), uEmail).get("code") == 0:
                 messagebox.showwarning(title='提示', message='插入成功')
 
